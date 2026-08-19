@@ -16,6 +16,12 @@
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
+  /* The loader paints before boot() runs; lock scrolling straight away
+     so the page cannot be scrolled behind it in the meantime. */
+  if (document.body && document.getElementById('loader')) {
+    document.body.classList.add('is-loading');
+  }
+
   /* ==========================================================
      1. i18n
      ========================================================== */
@@ -81,6 +87,9 @@
     setMeta('property', 'og:locale', meta.locale);
     setMeta('name', 'twitter:title', t('meta.ogTitle'));
     setMeta('name', 'twitter:description', t('meta.ogDescription'));
+
+    var soundBtn = $('#soundToggle');
+    if (soundBtn) soundBtn.setAttribute('aria-label', t(soundBtn.getAttribute('data-i18n') || 'a11y.soundOn'));
 
     var current = $('#langCurrent');
     if (current) current.textContent = meta.label;
@@ -200,6 +209,312 @@
   }
 
 
+
+  /* ==========================================================
+     Sound — every effect is synthesised with the Web Audio API,
+     so there is nothing to download. Muted until the visitor
+     turns it on, and it can never fire before a real gesture
+     (browsers block audio started without one).
+     ========================================================== */
+  var Sound = (function () {
+    var KEY = 'diq-sound';
+    var enabled = false;
+    var unlocked = false;
+    var ctx = null;
+    var master = null;
+    var lastPop = 0;
+
+    function available() {
+      return !!(window.AudioContext || window.webkitAudioContext) && !reduced();
+    }
+
+    function ensure() {
+      if (ctx || !available()) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      try { ctx = new AC(); } catch (e) { return null; }
+      master = ctx.createGain();
+      master.gain.value = 0.13;
+      master.connect(ctx.destination);
+      return ctx;
+    }
+
+    /* Called from the first real gesture anywhere on the page. */
+    function unlock() {
+      if (unlocked || !available()) return;
+      if (!ensure()) return;
+      if (ctx.state === 'suspended' && ctx.resume) ctx.resume();
+      unlocked = true;
+    }
+
+    function live() {
+      return enabled && unlocked && available() && ctx && ctx.state === 'running';
+    }
+
+    function blip(o) {
+      var t0 = ctx.currentTime + (o.delay || 0);
+      var dur = o.dur || .12;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = o.type || 'sine';
+      osc.frequency.setValueAtTime(o.freq, t0);
+      if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t0 + dur);
+      gain.gain.setValueAtTime(.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(o.vol || .5, t0 + .012);
+      gain.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(t0);
+      osc.stop(t0 + dur + .03);
+    }
+
+    function breath(dur, from, to, vol) {
+      var len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+      var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      var data = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+
+      var src = ctx.createBufferSource();
+      src.buffer = buf;
+      var band = ctx.createBiquadFilter();
+      band.type = 'bandpass';
+      band.Q.value = .8;
+      var t0 = ctx.currentTime;
+      band.frequency.setValueAtTime(from, t0);
+      band.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+      var gain = ctx.createGain();
+      gain.gain.setValueAtTime(vol, t0);
+      gain.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+      src.connect(band); band.connect(gain); gain.connect(master);
+      src.start(t0);
+      src.stop(t0 + dur + .03);
+    }
+
+    var api = {
+      pop: function () {
+        if (!live()) return;
+        var now = Date.now();
+        if (now - lastPop < 70) return;      /* hovering a grid must not machine-gun */
+        lastPop = now;
+        blip({ freq: 620, to: 880, dur: .07, vol: .18, type: 'sine' });
+      },
+      click: function () {
+        if (!live()) return;
+        blip({ freq: 340, to: 190, dur: .085, vol: .3, type: 'triangle' });
+        blip({ freq: 900, dur: .05, vol: .12, type: 'sine', delay: .01 });
+      },
+      whoosh: function (up) {
+        if (!live()) return;
+        if (up) breath(.26, 380, 2200, .16);
+        else breath(.22, 2000, 340, .14);
+      },
+      chord: function () {
+        if (!live()) return;
+        [523.25, 659.25, 783.99].forEach(function (f, i) {
+          blip({ freq: f, dur: .5, vol: .085, type: 'sine', delay: i * .055 });
+        });
+      },
+      isOn: function () { return enabled; },
+      unlock: unlock,
+      set: function (on, announce) {
+        enabled = !!on && available();
+        try { localStorage.setItem(KEY, enabled ? 'on' : 'off'); } catch (e) { /* ignore */ }
+        var btn = $('#soundToggle');
+        if (btn) {
+          btn.setAttribute('aria-pressed', String(enabled));
+          btn.setAttribute('aria-label', t(enabled ? 'a11y.soundOff' : 'a11y.soundOn'));
+          btn.setAttribute('data-i18n', enabled ? 'a11y.soundOff' : 'a11y.soundOn');
+        }
+        if (enabled && announce) { unlock(); api.click(); }
+      },
+      restore: function () {
+        var stored = null;
+        try { stored = localStorage.getItem(KEY); } catch (e) { /* private mode */ }
+        api.set(stored === 'on', false);
+      }
+    };
+    return api;
+  })();
+
+  function initSound() {
+    var btn = $('#soundToggle');
+    if (!btn) return;
+
+    /* Hide the control entirely when the platform cannot play anything. */
+    if (!(window.AudioContext || window.webkitAudioContext) || reduced()) {
+      btn.hidden = true;
+      return;
+    }
+
+    Sound.restore();
+    btn.addEventListener('click', function () { Sound.set(!Sound.isOn(), true); });
+
+    /* Browsers refuse audio started outside a gesture: arm on the first one. */
+    var arm = function () { Sound.unlock(); };
+    document.addEventListener('pointerdown', arm, { once: true });
+    document.addEventListener('keydown', arm, { once: true });
+
+    var HOVER = '.btn, .card, .map__media, .faq__btn, .maps__dot, .discord, .nav__link, .lang__option, .step';
+    document.addEventListener('pointerover', function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      if (e.target.closest && e.target.closest(HOVER)) Sound.pop();
+    });
+    document.addEventListener('pointerdown', function (e) {
+      if (e.target.closest && e.target.closest(HOVER + ', .sound, .lang__button, .burger')) Sound.click();
+    });
+  }
+
+  /* ==========================================================
+     Loader — the percentage tracks real image decoding, not a
+     timer. It eases toward the true figure but never past it.
+     ========================================================== */
+  function initLoader(done) {
+    var loader = $('#loader');
+    if (!loader) { done(); return; }
+
+    var pctEl = $('#loaderPct');
+    var barEl = $('#loaderBar');
+    var ringEl = $('#loaderRing');
+    var CIRC = 2 * Math.PI * 54;
+    document.body.classList.add('is-loading');
+
+    var urls = [];
+    $$('img').forEach(function (im) {
+      var u = im.getAttribute('src');
+      if (u && urls.indexOf(u) === -1) urls.push(u);
+    });
+
+    var total = urls.length + 1;   /* + the webfonts */
+    var loaded = 0;
+    var shown = 0;
+    var settled = false;
+    var raf = null;
+
+    function bump() { loaded++; }
+
+    /* A detached Image() loads even when the markup says loading="lazy". */
+    urls.forEach(function (u) {
+      var im = new Image();
+      im.onload = im.onerror = bump;
+      im.src = u;
+    });
+
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(bump, bump);
+    else bump();
+
+    /* Safety net: never trap the visitor behind a stalled request. */
+    var giveUp = window.setTimeout(function () { loaded = total; }, 8000);
+
+    function paint(v) {
+      var r = Math.round(v);
+      if (pctEl) pctEl.textContent = String(r);
+      loader.setAttribute('aria-valuenow', String(r));
+      if (barEl) barEl.style.transform = 'scaleX(' + (v / 100).toFixed(4) + ')';
+      if (ringEl) ringEl.style.strokeDashoffset = String(CIRC * (1 - v / 100));
+    }
+
+    function finish() {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(giveUp);
+      paint(100);
+      window.setTimeout(function () {
+        loader.classList.add('is-done');
+        document.body.classList.remove('is-loading');
+        done();
+        window.setTimeout(function () { loader.hidden = true; }, 1100);
+      }, 320);
+    }
+
+    function tick() {
+      var real = (loaded / total) * 100;
+      shown += (real - shown) * .18;
+      if (real - shown < .5) shown = real;
+      paint(shown);
+      if (loaded >= total && shown >= 99.5) { finish(); return; }
+      raf = window.requestAnimationFrame(tick);
+    }
+
+    paint(0);
+    raf = window.requestAnimationFrame(tick);
+  }
+
+  /* ==========================================================
+     Portfolio — one map per screen, the section repaints itself
+     in that map's colour, with side dots to jump between them.
+     ========================================================== */
+  function initMaps() {
+    var section = $('#portfolio');
+    var track = $('.maps__track');
+    var slides = $$('.map');
+    var dots = $$('.maps__dot');
+    var dotsNav = $('#mapsDots');
+    var hint = $('#mapsHint');
+    if (!section || !slides.length) return;
+
+    function activate(slide) {
+      var tone = slide.getAttribute('data-tone') || '1';
+      if (!section.classList.contains('tone-' + tone)) {
+        section.classList.remove('tone-1', 'tone-2');
+        section.classList.add('tone-' + tone);
+      }
+      dots.forEach(function (d) {
+        var on = d.getAttribute('data-goto') === slide.id;
+        d.classList.toggle('is-active', on);
+        if (on) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) activate(e.target); });
+      }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+      slides.forEach(function (s) { io.observe(s); });
+
+      if (dotsNav && track) {
+        var vis = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { dotsNav.classList.toggle('is-visible', e.isIntersecting); });
+        }, { rootMargin: '-10% 0px -10% 0px', threshold: 0 });
+        vis.observe(track);
+      }
+
+      if (hint) {
+        var hi = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) hint.classList.add('is-gone'); });
+        }, { threshold: .25 });
+        hi.observe(slides[0]);
+      }
+    } else if (dotsNav) {
+      dotsNav.classList.add('is-visible');
+    }
+
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () {
+        var el = document.getElementById(d.getAttribute('data-goto'));
+        if (!el) return;
+        var top = el.getBoundingClientRect().top + window.pageYOffset + 4;
+        window.scrollTo({ top: Math.max(0, top), behavior: reduced() ? 'auto' : 'smooth' });
+      });
+    });
+  }
+
+  /* ==========================================================
+     FAQ accordion
+     ========================================================== */
+  function initFaq() {
+    $$('.faq__btn').forEach(function (btn) {
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      var item = btn.closest('.faq__item');
+      if (!panel) return;
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        panel.classList.toggle('is-open', !open);
+        if (item) item.classList.toggle('is-open', !open);
+      });
+    });
+  }
+
   /* ==========================================================
      Marquee bands — text comes from i18n, duplicated so the
      -50% translate loops seamlessly at any viewport width.
@@ -296,12 +611,15 @@
       .filter(Boolean);
 
     if ('IntersectionObserver' in window && sections.length) {
+      var lastSection = null;
       var spy = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (!entry.isIntersecting) return;
           links.forEach(function (link) {
             link.classList.toggle('is-active', link.getAttribute('href') === '#' + entry.target.id);
           });
+          if (lastSection && lastSection !== entry.target.id) Sound.chord();
+          lastSection = entry.target.id;
         });
       }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
       sections.forEach(function (s) { spy.observe(s); });
@@ -485,7 +803,7 @@
 
   function initRipples() {
     document.addEventListener('pointerdown', function (e) {
-      var el = e.target.closest && e.target.closest('.btn, .card, .work, .discord');
+      var el = e.target.closest && e.target.closest('.btn, .card, .map__media, .discord, .faq__btn');
       if (!el) return;
       spawnRipple(el, e.clientX, e.clientY);
     });
@@ -599,6 +917,7 @@
       }
 
       window.requestAnimationFrame(function () { modal.classList.add('is-open'); });
+      Sound.whoosh(true);
       modalState.open = true;
       panel.focus({ preventScroll: true });
     }
@@ -607,6 +926,7 @@
       if (!modalState.open) return;
       modalState.open = false;
       modal.classList.remove('is-open');
+      Sound.whoosh(false);
 
       var origin = modalState.origin;
       var done = function () {
@@ -637,15 +957,24 @@
 
     /* Triggers */
     $$('[data-modal]').forEach(function (card) {
+      /* A detail button sits next to the image it describes: fly the panel
+         out of that image rather than out of the small button. */
+      var slide = card.closest('.map');
+      var origin = slide ? slide.querySelector('.map__media') : card;
+
       card.addEventListener('click', function () {
-        openModal(card.getAttribute('data-modal'), card);
+        openModal(card.getAttribute('data-modal'), origin);
       });
+
+      /* Buttons already turn Enter/Space into a click; binding keydown on
+         them as well would open the modal twice. */
+      if (card.tagName === 'BUTTON') return;
       card.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           var r = card.getBoundingClientRect();
           spawnRipple(card, r.left + r.width / 2, r.top + r.height / 2);
-          openModal(card.getAttribute('data-modal'), card);
+          openModal(card.getAttribute('data-modal'), origin);
         }
       });
     });
@@ -741,15 +1070,21 @@
     initLangUI();
     collectToneBlocks();
     applyLang(detectLang(), false);
+    initSound();
 
     initScrollChrome();
-    initReveals();
     initTilt();
     initBackgroundGlow();
     initCursor();
     initRipples();
     initModal();
     initNav();
+    initMaps();
+    initFaq();
+
+    /* Reveals wait for the loader so the hero actually animates in
+       behind the sweep instead of having played out of sight. */
+    initLoader(function () { initReveals(); });
 
     /* Webfonts change the marquee's natural width, so size it again
        once they are in — otherwise the track is measured against the

@@ -57,6 +57,23 @@
 </head>
 
 <body>
+<noscript><style>#loader{display:none}</style></noscript>
+<div class="loader" id="loader" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+     data-i18n="loader.label" data-i18n-attr="aria-label" aria-label="Chargement">
+  <div class="loader__inner">
+    <div class="loader__badge">
+      <svg class="loader__ring" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <circle class="loader__ringTrack" cx="60" cy="60" r="54" />
+        <circle class="loader__ringBar" id="loaderRing" cx="60" cy="60" r="54" />
+      </svg>
+      <img class="loader__logo" src="assets/logo.png" alt="" width="104" height="104" fetchpriority="high">
+    </div>
+    <p class="loader__pct" aria-hidden="true"><span id="loaderPct">0</span><span class="loader__unit">%</span></p>
+    <p class="loader__label" aria-hidden="true" data-i18n="loader.label">Chargement</p>
+    <div class="loader__bar" aria-hidden="true"><span class="loader__barFill" id="loaderBar"></span></div>
+  </div>
+</div>
+
 <a class="skip-link" href="#main" data-i18n="a11y.skip">Aller au contenu principal</a>
 
 <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="progressBar"></span></div>
@@ -79,11 +96,25 @@
       <a class="nav__link" href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
       <a class="nav__link" href="#process" data-i18n="nav.process">Process</a>
       <a class="nav__link" href="#pricing" data-i18n="nav.pricing">Tarifs</a>
+      <a class="nav__link" href="#faq" data-i18n="nav.faq">FAQ</a>
       <a class="nav__link" href="#contact" data-i18n="nav.contact">Contact</a>
       <a class="nav__link nav__link--cta" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
     </nav>
 
     <div class="header__actions">
+      <button class="sound" id="soundToggle" type="button" aria-pressed="false"
+              data-i18n="a11y.soundOn" data-i18n-attr="aria-label" aria-label="Activer les sons">
+        <svg class="sound__icon sound__icon--off" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">
+          <path d="M4 9.5h3.2L12 5.5v13L7.2 14.5H4z" fill="currentColor"/>
+          <path d="M16.5 9.5 21 14M21 9.5 16.5 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+        <svg class="sound__icon sound__icon--on" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">
+          <path d="M4 9.5h3.2L12 5.5v13L7.2 14.5H4z" fill="currentColor"/>
+          <path d="M15.6 9a4.2 4.2 0 0 1 0 6M18.3 6.6a7.8 7.8 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+        <span class="sound__dot" aria-hidden="true"></span>
+      </button>
+
       <div class="lang" id="lang">
         <button class="lang__button" id="langButton" type="button"
                 aria-haspopup="listbox" aria-expanded="false" aria-controls="langList"
@@ -261,55 +292,125 @@
 </section>
 
 <!-- ======================= PORTFOLIO ======================= -->
-<section class="sec sec--cream" id="portfolio" aria-labelledby="portfolioTitle">
+<section class="sec sec--maps maps tone-1" id="portfolio" aria-labelledby="portfolioTitle">
   <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0,70 C260,10 560,96 880,58 C1120,30 1300,4 1440,30 L1440,110 L0,110 Z" fill="currentColor"/>
   </svg>
   <div class="sec__fx" aria-hidden="true"><span class="blob blob--5"></span><span class="blob blob--6"></span></div>
 
-  <div class="shell">
+  <div class="shell maps__intro">
     <header class="sectionHead sectionHead--center">
       <p class="kicker" data-reveal="up" data-i18n="portfolio.kicker">Portfolio</p>
       <h2 class="sectionTitle" data-reveal="up" data-reveal-delay="1" id="portfolioTitle" data-i18n="portfolio.title">Des maps en ligne, jouables maintenant</h2>
       <p class="sectionLead" data-reveal="up" data-reveal-delay="2" data-i18n="portfolio.lead">Chaque map est publiée sous son propre code d'île.</p>
     </header>
+    <p class="maps__hint" id="mapsHint" data-reveal="up" data-reveal-delay="3">
+      <span data-i18n="portfolio.scrollHint">Scroller pour découvrir</span>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <path d="M12 4v15M6 13.5 12 20l6-6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </p>
+  </div>
 
-    <div class="works">
+  <nav class="maps__dots" id="mapsDots"
+       data-i18n="a11y.mapNav" data-i18n-attr="aria-label" aria-label="Navigation entre les maps">
+    <button class="maps__dot is-active" type="button" data-goto="map-1" aria-current="true">
+      <span class="maps__dotNum" aria-hidden="true">01</span>
+      <span class="maps__dotLabel" data-i18n="portfolio.p1.title">Mr106 1v1 Build Fight (200 Pump)</span>
+    </button>
+    <button class="maps__dot" type="button" data-goto="map-2">
+      <span class="maps__dotNum" aria-hidden="true">02</span>
+      <span class="maps__dotLabel" data-i18n="portfolio.p2.title">RED-BLUE (STAR-WARS)</span>
+    </button>
+  </nav>
 
-      <article class="work tilt" data-reveal="left" data-reveal-delay="1" data-modal="p1" tabindex="0" role="button" aria-haspopup="dialog">
-        <span class="work__glow" aria-hidden="true"></span>
-        <div class="work__media">
-          <img src="assets/map-1v1.png" alt="" width="1200" height="750" loading="lazy" decoding="async">
+  <div class="maps__track">
+
+    <article class="map" id="map-1" data-tone="1">
+      <div class="map__media tilt">
+        <span class="map__glow" aria-hidden="true"></span>
+        <img src="assets/map-1v1.png" alt="" width="1200" height="750" decoding="async">
+      </div>
+      <div class="map__body">
+        <span class="map__index" aria-hidden="true">01 / 02</span>
+        <span class="tag" data-i18n="portfolio.p1.tag">1v1 Build Fight</span>
+        <h3 class="map__title" data-i18n="portfolio.p1.title">Mr106 1v1 Build Fight (200 Pump)</h3>
+        <p class="map__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>1445-1331-8129</b></p>
+        <div class="map__actions">
+          <a class="btn btn--solid" href="https://fortnite.gg/island/1445-1331-8129" target="_blank" rel="noopener noreferrer" data-i18n="portfolio.viewMap">Voir la map</a>
+          <button class="btn btn--outline" type="button" data-modal="p1" aria-haspopup="dialog" data-i18n="common.details">Détails</button>
         </div>
-        <div class="work__body">
-          <span class="tag" data-i18n="portfolio.p1.tag">1v1 Build Fight</span>
-          <h3 class="work__title" data-i18n="portfolio.p1.title">Mr106 1v1 Build Fight (200 Pump)</h3>
-          <p class="work__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>1445-1331-8129</b></p>
-        </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="work tilt" data-reveal="right" data-reveal-delay="2" data-modal="p2" tabindex="0" role="button" aria-haspopup="dialog">
-        <span class="work__glow" aria-hidden="true"></span>
-        <div class="work__media">
-          <img src="assets/map-redblue.png" alt="" width="1200" height="750" loading="lazy" decoding="async">
+    <article class="map" id="map-2" data-tone="2">
+      <div class="map__media tilt">
+        <span class="map__glow" aria-hidden="true"></span>
+        <img src="assets/map-redblue.png" alt="" width="1200" height="750" loading="lazy" decoding="async">
+      </div>
+      <div class="map__body">
+        <span class="map__index" aria-hidden="true">02 / 02</span>
+        <span class="tag" data-i18n="portfolio.p2.tag">Red vs Blue</span>
+        <h3 class="map__title" data-i18n="portfolio.p2.title">RED-BLUE (STAR-WARS)</h3>
+        <p class="map__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>7410-8193-7803</b></p>
+        <p class="map__meta"><span data-i18n="portfolio.publishedOn">Publiée sur le compte</span> <b>dragoniq2</b></p>
+        <div class="map__actions">
+          <a class="btn btn--solid" href="https://fortnite.gg/island/7410-8193-7803" target="_blank" rel="noopener noreferrer" data-i18n="portfolio.viewMap">Voir la map</a>
+          <button class="btn btn--outline" type="button" data-modal="p2" aria-haspopup="dialog" data-i18n="common.details">Détails</button>
         </div>
-        <div class="work__body">
-          <span class="tag" data-i18n="portfolio.p2.tag">Red vs Blue</span>
-          <h3 class="work__title" data-i18n="portfolio.p2.title">RED-BLUE (STAR-WARS)</h3>
-          <p class="work__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>7410-8193-7803</b></p>
-          <p class="work__meta"><span data-i18n="portfolio.publishedOn">Publiée sur le compte</span> <b>dragoniq2</b></p>
-        </div>
-      </article>
+      </div>
+    </article>
 
-    </div>
+  </div>
 
-    <aside class="note" data-reveal="up" data-reveal-delay="3">
+  <div class="shell">
+    <aside class="note" data-reveal="up">
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
         <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
         <path d="M12 11v6M12 7.4v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <p data-i18n="portfolio.note">Certaines maps suivent exactement le brief du client, y compris le style visuel. Le rendu correspond à la demande, pas à ma direction artistique.</p>
     </aside>
+  </div>
+</section>
+
+<!-- ======================= VERSUS ======================= -->
+<section class="sec sec--cream versus" id="versus" aria-labelledby="versusTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,36 C240,96 560,88 880,44 C1120,10 1310,64 1440,36 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--11"></span><span class="blob blob--12"></span></div>
+
+  <div class="shell">
+    <header class="sectionHead">
+      <p class="kicker" data-reveal="left" data-i18n="versus.kicker">La différence</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="versusTitle" data-i18n="versus.title">Ce que tu ne trouveras pas ici</h2>
+      <p class="sectionLead" data-reveal="right" data-reveal-delay="2" data-i18n="versus.lead">Ce qui se pratique ailleurs, et ce que je fais à la place.</p>
+    </header>
+
+    <div class="versus__heads" aria-hidden="true">
+      <p class="versus__label versus__label--them" data-i18n="versus.themLabel">Ailleurs</p>
+      <p class="versus__label versus__label--us" data-i18n="versus.usLabel">Chez DragonIQ.Studio</p>
+    </div>
+
+    <dl class="versus__grid">
+      <div class="versus__row" data-reveal="left" data-reveal-delay="1">
+        <dt class="versus__bad"><s data-i18n="versus.r1.bad">Templates recyclés</s></dt>
+        <dd class="versus__good"><span data-i18n="versus.r1.good">Map créée de zéro</span></dd>
+      </div>
+      <div class="versus__row" data-reveal="left" data-reveal-delay="2">
+        <dt class="versus__bad"><s data-i18n="versus.r2.bad">Livraison en 3 semaines</s></dt>
+        <dd class="versus__good"><span data-i18n="versus.r2.good">Livraison en 24-48 h</span></dd>
+      </div>
+      <div class="versus__row" data-reveal="left" data-reveal-delay="3">
+        <dt class="versus__bad"><s data-i18n="versus.r3.bad">Commission de 20 %</s></dt>
+        <dd class="versus__good"><span data-i18n="versus.r3.good">Tu paies le juste prix</span></dd>
+      </div>
+      <div class="versus__row" data-reveal="left" data-reveal-delay="4">
+        <dt class="versus__bad"><s data-i18n="versus.r4.bad">Support inexistant</s></dt>
+        <dd class="versus__good"><span data-i18n="versus.r4.good">Révisions incluses</span></dd>
+      </div>
+    </dl>
   </div>
 </section>
 
@@ -366,6 +467,91 @@
       <p class="quote__desc" data-i18n="pricing.desc">Pas de grille figée : le prix dépend de la taille de la map, de la complexité du gameplay et du délai. Décris ton projet, tu reçois une estimation ferme.</p>
       <a class="btn btn--solid btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="pricing.cta">Demander mon devis</a>
       <p class="quote__note" data-i18n="pricing.note">Gratuit, sans engagement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section class="sec sec--teal faq" id="faq" aria-labelledby="faqTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,64 C230,8 540,26 860,66 C1110,96 1300,44 1440,68 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--13"></span><span class="blob blob--14"></span></div>
+
+  <div class="shell">
+    <header class="sectionHead">
+      <p class="kicker" data-reveal="left" data-i18n="faq.kicker">FAQ</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="faqTitle" data-i18n="faq.title">Les questions qu'on me pose</h2>
+      <p class="sectionLead" data-reveal="right" data-reveal-delay="2" data-i18n="faq.lead">Tout ce qu'il faut savoir avant d'ouvrir un ticket.</p>
+    </header>
+
+    <div class="faq__list" data-reveal="up">
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB1" aria-expanded="false" aria-controls="faqP1">
+            <span data-i18n="faq.q1">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP1" role="region" aria-labelledby="faqB1">
+          <div class="faq__panelInner"><p data-i18n="faq.a1">Réponse</p></div>
+        </div>
+      </div>
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB2" aria-expanded="false" aria-controls="faqP2">
+            <span data-i18n="faq.q2">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP2" role="region" aria-labelledby="faqB2">
+          <div class="faq__panelInner"><p data-i18n="faq.a2">Réponse</p></div>
+        </div>
+      </div>
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB3" aria-expanded="false" aria-controls="faqP3">
+            <span data-i18n="faq.q3">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP3" role="region" aria-labelledby="faqB3">
+          <div class="faq__panelInner"><p data-i18n="faq.a3">Réponse</p></div>
+        </div>
+      </div>
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB4" aria-expanded="false" aria-controls="faqP4">
+            <span data-i18n="faq.q4">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP4" role="region" aria-labelledby="faqB4">
+          <div class="faq__panelInner"><p data-i18n="faq.a4">Réponse</p></div>
+        </div>
+      </div>
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB5" aria-expanded="false" aria-controls="faqP5">
+            <span data-i18n="faq.q5">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP5" role="region" aria-labelledby="faqB5">
+          <div class="faq__panelInner"><p data-i18n="faq.a5">Réponse</p></div>
+        </div>
+      </div>
+      <div class="faq__item">
+        <h3 class="faq__q">
+          <button class="faq__btn" type="button" id="faqB6" aria-expanded="false" aria-controls="faqP6">
+            <span data-i18n="faq.q6">Question</span>
+            <span class="faq__sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq__panel" id="faqP6" role="region" aria-labelledby="faqB6">
+          <div class="faq__panelInner"><p data-i18n="faq.a6">Réponse</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -437,6 +623,7 @@
       <a href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
       <a href="#process" data-i18n="nav.process">Process</a>
       <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
       <a href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">Discord</a>
     </nav>
