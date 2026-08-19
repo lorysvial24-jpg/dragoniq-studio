@@ -95,6 +95,7 @@
       try { localStorage.setItem(STORAGE_KEY, code); } catch (e) { /* ignore */ }
     }
 
+    renderMarquees();
     if (modalState.open) renderModal(modalState.key);
   }
 
@@ -198,6 +199,63 @@
     });
   }
 
+
+  /* ==========================================================
+     Marquee bands — text comes from i18n, duplicated so the
+     -50% translate loops seamlessly at any viewport width.
+     ========================================================== */
+  function renderMarquees() {
+    $$('.marquee__row').forEach(function (row) {
+      var tracks = $$('[data-marquee]', row);
+      if (!tracks.length) return;
+      for (var i = tracks.length - 1; i > 0; i--) tracks[i].remove();
+
+      var seed = tracks[0];
+      var unit = t('marquee.text');
+
+      /* Measure one repetition, then repeat just enough to overflow the
+         viewport — a track much wider than that is wasted paint work. */
+      seed.textContent = unit;
+      var unitWidth = seed.getBoundingClientRect().width || 400;
+      var reps = Math.max(2, Math.ceil(window.innerWidth / unitWidth) + 1);
+      var text = '';
+      for (var j = 0; j < reps; j++) text += unit;
+      seed.textContent = text;
+
+      var clone = seed.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      row.appendChild(clone);
+    });
+  }
+
+  /* ==========================================================
+     Header tone — the header floats over sections of very
+     different lightness, so it flips its own ink to keep
+     contrast wherever it happens to be.
+     ========================================================== */
+  var toneBlocks = [];
+
+  function collectToneBlocks() {
+    toneBlocks = $$('.sec, .marquee, .footer').map(function (el) {
+      var light = el.classList.contains('sec--cream') ||
+                  el.classList.contains('sec--orange') ||
+                  el.classList.contains('marquee--cyan');
+      return { el: el, tone: light ? 'light' : 'dark' };
+    });
+  }
+
+  function updateHeaderTone(header) {
+    if (!header || !toneBlocks.length) return;
+    var probe = header.offsetHeight * 0.55;
+    for (var i = 0; i < toneBlocks.length; i++) {
+      var r = toneBlocks[i].el.getBoundingClientRect();
+      if (r.top <= probe && r.bottom > probe) {
+        if (header.dataset.tone !== toneBlocks[i].tone) header.dataset.tone = toneBlocks[i].tone;
+        return;
+      }
+    }
+  }
+
   /* ==========================================================
      2. Header, progress bar, active section
      ========================================================== */
@@ -208,7 +266,10 @@
 
     function update() {
       var y = window.pageYOffset || document.documentElement.scrollTop;
-      if (header) header.classList.toggle('is-scrolled', y > 12);
+      if (header) {
+        header.classList.toggle('is-scrolled', y > 12);
+        updateHeaderTone(header);
+      }
 
       if (bar) {
         var doc = document.documentElement;
@@ -259,7 +320,6 @@
 
     if (reduced() || !('IntersectionObserver' in window)) {
       items.forEach(function (el) { el.classList.add('is-visible'); });
-      $$('.step').forEach(function (el) { el.classList.add('is-visible'); });
       $$('[data-count]').forEach(function (el) { el.textContent = el.getAttribute('data-count'); });
       return;
     }
@@ -301,7 +361,7 @@
      ========================================================== */
   function initTilt() {
     if (!fine() || reduced()) return;
-    var MAX = 7;
+    var MAX = 5.5;  /* x2 below -> 11deg of tilt from edge to edge */
 
     $$('.tilt').forEach(function (card) {
       var frame = null;
@@ -425,7 +485,7 @@
 
   function initRipples() {
     document.addEventListener('pointerdown', function (e) {
-      var el = e.target.closest && e.target.closest('.btn, .card, .discord');
+      var el = e.target.closest && e.target.closest('.btn, .card, .work, .discord');
       if (!el) return;
       spawnRipple(el, e.clientX, e.clientY);
     });
@@ -445,12 +505,19 @@
       list: ['portfolio.p1.f1', 'portfolio.p1.f2', 'portfolio.p1.f3'],
       media: 'assets/map-1v1.png',
       actions: [
-        { key: 'common.playCta', href: 'https://fortnite.gg/island/1445-1331-8129', variant: 'accent' },
-        { key: 'common.orderCta', href: DISCORD, variant: 'ghost' }
+        { key: 'common.playCta', href: 'https://fortnite.gg/island/1445-1331-8129', variant: 'solid' },
+        { key: 'common.orderCta', href: DISCORD, variant: 'outline' }
       ]
     },
-    p2: { kicker: 'portfolio.slotBadge', title: 'portfolio.p2.title', desc: 'portfolio.p2.long', media: 'assets/map-chapitre2.png' },
-    p3: { kicker: 'portfolio.slotBadge', title: 'portfolio.p3.title', desc: 'portfolio.p3.long', media: 'assets/map-tycoon.png' }
+    p2: {
+      kicker: 'portfolio.p2.tag', title: 'portfolio.p2.title', desc: 'portfolio.p2.long',
+      list: ['portfolio.p2.f1', 'portfolio.p2.f2', 'portfolio.p2.f3', 'portfolio.p2.f4'],
+      media: 'assets/map-redblue.png',
+      actions: [
+        { key: 'common.playCta', href: 'https://fortnite.gg/island/7410-8193-7803', variant: 'solid' },
+        { key: 'common.orderCta', href: DISCORD, variant: 'outline' }
+      ]
+    }
   };
 
   var modalState = { open: false, key: null, origin: null, lastFocus: null };
@@ -482,7 +549,7 @@
 
     var actions = $('#modalActions');
     actions.innerHTML = '';
-    var list2 = data.actions || [{ key: 'common.orderCta', href: DISCORD, variant: 'accent' }];
+    var list2 = data.actions || [{ key: 'common.orderCta', href: DISCORD, variant: 'solid' }];
     list2.forEach(function (a) {
       var link = document.createElement('a');
       link.className = 'btn btn--' + a.variant;
@@ -672,6 +739,7 @@
     if (year) year.textContent = String(new Date().getFullYear());
 
     initLangUI();
+    collectToneBlocks();
     applyLang(detectLang(), false);
 
     initScrollChrome();
@@ -682,6 +750,25 @@
     initRipples();
     initModal();
     initNav();
+
+    /* Webfonts change the marquee's natural width, so size it again
+       once they are in — otherwise the track is measured against the
+       fallback face and ends up far longer than it needs to be. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(renderMarquees);
+    }
+
+    /* SMIL blob morphing cannot be stopped from CSS */
+    if (reduced()) $$('svg.morph').forEach(function (s) { if (s.pauseAnimations) s.pauseAnimations(); });
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(function () {
+        collectToneBlocks();
+        renderMarquees();
+      }, 180);
+    });
   }
 
   if (document.readyState === 'loading') {

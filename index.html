@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#08080A">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#2E0B63">
 
 <title data-i18n="meta.title">DragonIQ.Studio — Création de maps Fortnite UEFN sur mesure</title>
 <meta name="description" data-i18n="meta.description" data-i18n-attr="content" content="Studio spécialisé dans la création de maps Fortnite complètes sous UEFN : 1v1, Tycoon, Box Fight, RP et projets sur mesure. Devis gratuit sous 24 h.">
@@ -15,18 +15,19 @@
 <meta property="og:url" content="https://dragoniqstudio.com/">
 <meta property="og:title" data-i18n="meta.ogTitle" data-i18n-attr="content" content="DragonIQ.Studio — Vos maps Fortnite, créées de A à Z">
 <meta property="og:description" data-i18n="meta.ogDescription" data-i18n-attr="content" content="Maps Fortnite UEFN complètes : conception, développement, publication. Ouvre un ticket sur Discord, devis gratuit sous 24 h.">
-<meta property="og:image" content="https://dragoniqstudio.com/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://dragoniqstudio.com/assets/logo.png">
+<meta property="og:image:width" content="768">
+<meta property="og:image:height" content="768">
+<meta property="og:image:alt" content="DragonIQ.Studio">
 <meta property="og:locale" content="fr_FR">
 
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 <meta name="twitter:title" data-i18n="meta.ogTitle" data-i18n-attr="content" content="DragonIQ.Studio — Vos maps Fortnite, créées de A à Z">
 <meta name="twitter:description" data-i18n="meta.ogDescription" data-i18n-attr="content" content="Maps Fortnite UEFN complètes : conception, développement, publication. Ouvre un ticket sur Discord, devis gratuit sous 24 h.">
-<meta name="twitter:image" content="https://dragoniqstudio.com/assets/og-image.png">
+<meta name="twitter:image" content="https://dragoniqstudio.com/assets/logo.png">
 
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,8 +41,8 @@
   "name": "DragonIQ.Studio",
   "alternateName": "DragonIQ Studio",
   "url": "https://dragoniqstudio.com/",
-  "logo": "https://dragoniqstudio.com/assets/favicon.svg",
-  "image": "https://dragoniqstudio.com/assets/og-image.png",
+  "logo": "https://dragoniqstudio.com/assets/logo.png",
+  "image": "https://dragoniqstudio.com/assets/logo.png",
   "description": "Studio de création de maps Fortnite complètes sous Unreal Editor for Fortnite (UEFN) : 1v1, Tycoon, Box Fight, RP et projets sur mesure.",
   "sameAs": ["https://discord.gg/PPKyGfJTQ"],
   "knowsLanguage": ["fr", "en", "pt", "es", "it", "de"],
@@ -65,25 +66,11 @@
   <span class="cursor__ring"></span>
 </div>
 
-<div class="bg" aria-hidden="true">
-  <div class="bg__gradient"></div>
-  <div class="bg__glow" id="bgGlow"></div>
-  <div class="bg__grain"></div>
-</div>
-
 <!-- ======================= HEADER ======================= -->
-<header class="header" id="header">
+<header class="header" id="header" data-tone="dark">
   <div class="header__inner shell">
     <a class="logo" href="#top" aria-label="DragonIQ.Studio">
-      <span class="logo__mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
-          <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#22D3EE"/>
-          </linearGradient></defs>
-          <path d="M9 7h6c5.2 0 9 3.6 9 9s-3.8 9-9 9H9z" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linejoin="round"/>
-          <circle cx="20" cy="16" r="1.9" fill="url(#lg)"/>
-        </svg>
-      </span>
+      <span class="logo__disc"><img class="logo__img" src="assets/logo.png" alt="" width="44" height="44" decoding="async"></span>
       <span class="logo__text">DragonIQ<span class="logo__dot">.</span>Studio</span>
     </a>
 
@@ -97,25 +84,24 @@
     </nav>
 
     <div class="header__actions">
-      <!-- Language dropdown -->
       <div class="lang" id="lang">
         <button class="lang__button" id="langButton" type="button"
                 aria-haspopup="listbox" aria-expanded="false" aria-controls="langList"
                 data-i18n="a11y.langButton" data-i18n-attr="aria-label" aria-label="Changer de langue">
           <svg class="lang__globe" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M3 12h18M12 3c2.6 2.6 3.8 6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-6-3.8-9S9.4 5.6 12 3z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3 12h18M12 3c2.6 2.6 3.8 6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-6-3.8-9S9.4 5.6 12 3z" fill="none" stroke="currentColor" stroke-width="1.8"/>
           </svg>
           <span class="lang__current" id="langCurrent">FR</span>
           <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
-            <path d="M6 9.5 12 15l6-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 9.5 12 15l6-5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
         <ul class="lang__list" id="langList" role="listbox" tabindex="-1"
             data-i18n="a11y.langList" data-i18n-attr="aria-label" aria-label="Langues disponibles"></ul>
       </div>
 
-      <a class="btn btn--accent btn--sm" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
+      <a class="btn btn--solid btn--sm" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
 
       <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav"
               data-i18n="a11y.menu" data-i18n-attr="aria-label" aria-label="Ouvrir le menu">
@@ -129,22 +115,34 @@
 <span id="top"></span>
 
 <!-- ======================= HERO ======================= -->
-<section class="hero" id="hero">
+<section class="sec sec--violet hero" id="hero">
+  <div class="sec__fx" aria-hidden="true">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <svg class="morph morph--hero" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <path fill="rgba(236,72,153,.42)">
+        <animate attributeName="d" dur="18s" repeatCount="indefinite"
+          values="M300,120 C420,120 500,220 500,320 C500,440 400,500 290,500 C180,500 100,420 100,310 C100,200 180,120 300,120 Z;
+                  M310,100 C450,130 520,240 490,350 C460,470 340,520 230,490 C120,460 80,340 110,230 C140,120 210,80 310,100 Z;
+                  M290,130 C410,100 520,190 510,310 C500,430 390,510 280,500 C160,490 90,390 100,280 C110,180 190,150 290,130 Z;
+                  M300,120 C420,120 500,220 500,320 C500,440 400,500 290,500 C180,500 100,420 100,310 C100,200 180,120 300,120 Z"/>
+      </path>
+    </svg>
+  </div>
+
   <div class="shell hero__inner">
-    <p class="kicker reveal" data-reveal data-i18n="hero.badge">Studio UEFN · Fortnite Creative</p>
-
-    <h1 class="hero__title reveal" data-reveal data-reveal-delay="1" data-i18n="hero.title">Vos maps Fortnite, créées de A à Z</h1>
-
-    <p class="hero__subtitle reveal" data-reveal data-reveal-delay="2" data-i18n="hero.subtitle">
+    <p class="kicker" data-reveal="left" data-i18n="hero.badge">Studio UEFN · Fortnite Creative</p>
+    <h1 class="hero__title" data-reveal="left" data-reveal-delay="1" data-i18n="hero.title">Vos maps Fortnite, créées de A à Z</h1>
+    <p class="hero__subtitle" data-reveal="right" data-reveal-delay="2" data-i18n="hero.subtitle">
       Conception, level design, code Verse et publication — tout est développé dans l'Unreal Editor for Fortnite. Vous décrivez l'idée, je livre la map jouable.
     </p>
 
-    <div class="hero__actions reveal" data-reveal data-reveal-delay="3">
-      <a class="btn btn--accent" href="#portfolio" data-i18n="hero.ctaPrimary">Voir mes maps</a>
-      <a class="btn btn--ghost" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="hero.ctaSecondary">Commander sur Discord</a>
+    <div class="hero__actions" data-reveal="up" data-reveal-delay="3">
+      <a class="btn btn--solid btn--lg" href="#portfolio" data-i18n="hero.ctaPrimary">Voir mes maps</a>
+      <a class="btn btn--outline btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="hero.ctaSecondary">Commander sur Discord</a>
     </div>
 
-    <dl class="stats reveal" data-reveal data-reveal-delay="4">
+    <dl class="stats" data-reveal="up" data-reveal-delay="4">
       <div class="stat">
         <dt class="stat__value"><span data-count="5">5</span></dt>
         <dd class="stat__label" data-i18n="hero.stat1">Formats de maps couverts</dd>
@@ -159,42 +157,55 @@
       </div>
     </dl>
   </div>
-
-  <div class="hero__scroll" aria-hidden="true"><span class="hero__scrollLine"></span></div>
 </section>
 
+<!-- ======================= MARQUEE A ======================= -->
+<div class="marquee marquee--cyan" aria-hidden="true">
+  <div class="marquee__row">
+    <span class="marquee__track" data-marquee>UEFN · 1V1 · TYCOON · BOX FIGHT · RP · SUR MESURE · </span>
+  </div>
+  <div class="marquee__row marquee__row--reverse">
+    <span class="marquee__track marquee__track--outline" data-marquee>UEFN · 1V1 · TYCOON · BOX FIGHT · RP · SUR MESURE · </span>
+  </div>
+</div>
+
 <!-- ======================= SERVICES ======================= -->
-<section class="section" id="services" aria-labelledby="servicesTitle">
+<section class="sec sec--blue" id="services" aria-labelledby="servicesTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,44 C300,110 640,0 960,34 C1180,57 1320,88 1440,74 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--3"></span><span class="blob blob--4"></span></div>
+
   <div class="shell">
     <header class="sectionHead">
-      <p class="kicker reveal" data-reveal data-i18n="services.kicker">Services</p>
-      <h2 class="sectionTitle reveal" data-reveal data-reveal-delay="1" id="servicesTitle" data-i18n="services.title">Ce que je construis</h2>
-      <p class="sectionLead reveal" data-reveal data-reveal-delay="2" data-i18n="services.lead">Cinq spécialités, une même exigence : une map propre, optimisée et prête à être jouée le jour de la livraison.</p>
+      <p class="kicker" data-reveal="left" data-i18n="services.kicker">Services</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="servicesTitle" data-i18n="services.title">Ce que je construis</h2>
+      <p class="sectionLead" data-reveal="right" data-reveal-delay="2" data-i18n="services.lead">Cinq spécialités, une même exigence : une map propre, optimisée et prête à être jouée le jour de la livraison.</p>
     </header>
 
     <div class="grid grid--services">
 
-      <article class="card card--service tilt reveal" data-reveal data-reveal-delay="1" data-modal="s1" tabindex="0" role="button" aria-haspopup="dialog">
+      <article class="card card--service card--c1 tilt" data-reveal="left" data-reveal-delay="1" data-modal="s1" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="card__glow" aria-hidden="true"></span>
         <span class="card__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="26" height="26" focusable="false">
-            <path d="M11 6 5 16l6 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M21 6l6 10-6 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16 3v26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 4" opacity=".75"/>
+          <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+            <path d="M11 6 5 16l6 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 6l6 10-6 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 3v26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 4" opacity=".8"/>
           </svg>
         </span>
         <h3 class="card__title" data-i18n="services.s1.title">Maps 1v1</h3>
-        <p class="card__desc" data-i18n="services.s1.desc">Build fights, zone wars et duels réglés au millimètre : spawn équilibrés, loadouts propres, reset instantané.</p>
+        <p class="card__desc" data-i18n="services.s1.desc">Build fights, zone wars et duels réglés au millimètre : spawns équilibrés, loadouts propres, reset instantané.</p>
         <span class="card__more" data-i18n="common.details">Détails</span>
       </article>
 
-      <article class="card card--service tilt reveal" data-reveal data-reveal-delay="2" data-modal="s2" tabindex="0" role="button" aria-haspopup="dialog">
+      <article class="card card--service card--c2 tilt" data-reveal="up" data-reveal-delay="2" data-modal="s2" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="card__glow" aria-hidden="true"></span>
         <span class="card__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="26" height="26" focusable="false">
-            <path d="M6 26V19M13 26V13M20 26V16M27 26V7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-            <path d="M4 29h24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
-            <circle cx="13" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+            <path d="M6 26V19M13 26V13M20 26V16M27 26V7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M4 29h24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+            <circle cx="13" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
           </svg>
         </span>
         <h3 class="card__title" data-i18n="services.s2.title">Tycoon</h3>
@@ -202,13 +213,13 @@
         <span class="card__more" data-i18n="common.details">Détails</span>
       </article>
 
-      <article class="card card--service tilt reveal" data-reveal data-reveal-delay="3" data-modal="s3" tabindex="0" role="button" aria-haspopup="dialog">
+      <article class="card card--service card--c3 tilt" data-reveal="right" data-reveal-delay="3" data-modal="s3" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="card__glow" aria-hidden="true"></span>
         <span class="card__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="26" height="26" focusable="false">
-            <path d="M16 4 27 9.5v13L16 28 5 22.5v-13z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            <path d="M5 9.5 16 15l11-5.5M16 15v13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".7"/>
-            <circle cx="16" cy="15" r="2.4" fill="currentColor"/>
+          <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+            <path d="M16 4 27 9.5v13L16 28 5 22.5v-13z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M5 9.5 16 15l11-5.5M16 15v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" opacity=".8"/>
+            <circle cx="16" cy="15" r="2.6" fill="currentColor"/>
           </svg>
         </span>
         <h3 class="card__title" data-i18n="services.s3.title">Box Fight / PvP</h3>
@@ -216,14 +227,14 @@
         <span class="card__more" data-i18n="common.details">Détails</span>
       </article>
 
-      <article class="card card--service tilt reveal" data-reveal data-reveal-delay="4" data-modal="s4" tabindex="0" role="button" aria-haspopup="dialog">
+      <article class="card card--service card--c4 tilt" data-reveal="left" data-reveal-delay="4" data-modal="s4" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="card__glow" aria-hidden="true"></span>
         <span class="card__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="26" height="26" focusable="false">
-            <path d="M5 27V11l7-5 7 5v16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            <path d="M19 27V15l8 4v8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            <path d="M10 27v-6h4v6" fill="none" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M3 27h26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".6"/>
+          <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+            <path d="M5 27V11l7-5 7 5v16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M19 27V15l8 4v8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M10 27v-6h4v6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3 27h26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
           </svg>
         </span>
         <h3 class="card__title" data-i18n="services.s4.title">Maps RP</h3>
@@ -231,13 +242,13 @@
         <span class="card__more" data-i18n="common.details">Détails</span>
       </article>
 
-      <article class="card card--service tilt reveal" data-reveal data-reveal-delay="5" data-modal="s5" tabindex="0" role="button" aria-haspopup="dialog">
+      <article class="card card--service card--c5 tilt" data-reveal="right" data-reveal-delay="5" data-modal="s5" tabindex="0" role="button" aria-haspopup="dialog">
         <span class="card__glow" aria-hidden="true"></span>
         <span class="card__icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="26" height="26" focusable="false">
-            <path d="M20 4.5 27.5 12 13 26.5l-8 1.5 1.5-8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-            <path d="M17.5 7 25 14.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
-            <path d="M6 5.5 6.9 8 9.4 9 6.9 10 6 12.5 5.1 10 2.6 9 5.1 8z" fill="currentColor" opacity=".85"/>
+          <svg viewBox="0 0 32 32" width="28" height="28" focusable="false">
+            <path d="M20 4.5 27.5 12 13 26.5l-8 1.5 1.5-8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M17.5 7 25 14.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M6 5.5 6.9 8 9.4 9 6.9 10 6 12.5 5.1 10 2.6 9 5.1 8z" fill="currentColor"/>
           </svg>
         </span>
         <h3 class="card__title" data-i18n="services.s5.title">Créations sur mesure</h3>
@@ -250,55 +261,52 @@
 </section>
 
 <!-- ======================= PORTFOLIO ======================= -->
-<section class="section" id="portfolio" aria-labelledby="portfolioTitle">
+<section class="sec sec--cream" id="portfolio" aria-labelledby="portfolioTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,70 C260,10 560,96 880,58 C1120,30 1300,4 1440,30 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--5"></span><span class="blob blob--6"></span></div>
+
   <div class="shell">
-    <header class="sectionHead">
-      <p class="kicker reveal" data-reveal data-i18n="portfolio.kicker">Portfolio</p>
-      <h2 class="sectionTitle reveal" data-reveal data-reveal-delay="1" id="portfolioTitle" data-i18n="portfolio.title">Des maps en ligne, jouables maintenant</h2>
-      <p class="sectionLead reveal" data-reveal data-reveal-delay="2" data-i18n="portfolio.lead">Une sélection de projets livrés. Chaque map est publiée sous son propre code d'île.</p>
+    <header class="sectionHead sectionHead--center">
+      <p class="kicker" data-reveal="up" data-i18n="portfolio.kicker">Portfolio</p>
+      <h2 class="sectionTitle" data-reveal="up" data-reveal-delay="1" id="portfolioTitle" data-i18n="portfolio.title">Des maps en ligne, jouables maintenant</h2>
+      <p class="sectionLead" data-reveal="up" data-reveal-delay="2" data-i18n="portfolio.lead">Chaque map est publiée sous son propre code d'île.</p>
     </header>
 
-    <div class="grid grid--portfolio">
+    <div class="works">
 
-      <article class="card card--work tilt reveal" data-reveal data-reveal-delay="1" data-modal="p1" tabindex="0" role="button" aria-haspopup="dialog"
-               style="--thumb:url('assets/map-1v1.png')">
-        <span class="card__glow" aria-hidden="true"></span>
-        <span class="card__thumb" aria-hidden="true"></span>
-        <div class="card__body">
+      <article class="work tilt" data-reveal="left" data-reveal-delay="1" data-modal="p1" tabindex="0" role="button" aria-haspopup="dialog">
+        <span class="work__glow" aria-hidden="true"></span>
+        <div class="work__media">
+          <img src="assets/map-1v1.png" alt="" width="1200" height="750" loading="lazy" decoding="async">
+        </div>
+        <div class="work__body">
           <span class="tag" data-i18n="portfolio.p1.tag">1v1 Build Fight</span>
-          <h3 class="card__title" data-i18n="portfolio.p1.title">Mr106 1v1 Build Fight (200 Pump)</h3>
-          <p class="card__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>1445-1331-8129</b></p>
+          <h3 class="work__title" data-i18n="portfolio.p1.title">Mr106 1v1 Build Fight (200 Pump)</h3>
+          <p class="work__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>1445-1331-8129</b></p>
         </div>
       </article>
 
-      <article class="card card--work card--slot tilt reveal" data-reveal data-reveal-delay="2" data-modal="p2" tabindex="0" role="button" aria-haspopup="dialog"
-               style="--thumb:url('assets/map-chapitre2.png')">
-        <span class="card__glow" aria-hidden="true"></span>
-        <span class="card__thumb" aria-hidden="true"></span>
-        <div class="card__body">
-          <span class="tag tag--muted" data-i18n="portfolio.slotBadge">Emplacement libre</span>
-          <h3 class="card__title" data-i18n="portfolio.p2.title">Votre prochain projet</h3>
-          <p class="card__code" data-i18n="portfolio.p2.desc">Cet emplacement attend votre map. Ouvrez un ticket et lancez le projet.</p>
+      <article class="work tilt" data-reveal="right" data-reveal-delay="2" data-modal="p2" tabindex="0" role="button" aria-haspopup="dialog">
+        <span class="work__glow" aria-hidden="true"></span>
+        <div class="work__media">
+          <img src="assets/map-redblue.png" alt="" width="1200" height="750" loading="lazy" decoding="async">
         </div>
-      </article>
-
-      <article class="card card--work card--slot tilt reveal" data-reveal data-reveal-delay="3" data-modal="p3" tabindex="0" role="button" aria-haspopup="dialog"
-               style="--thumb:url('assets/map-tycoon.png')">
-        <span class="card__glow" aria-hidden="true"></span>
-        <span class="card__thumb" aria-hidden="true"></span>
-        <div class="card__body">
-          <span class="tag tag--muted" data-i18n="portfolio.slotBadge">Emplacement libre</span>
-          <h3 class="card__title" data-i18n="portfolio.p3.title">Tycoon, RP, sur mesure…</h3>
-          <p class="card__code" data-i18n="portfolio.p3.desc">Un format qui vous manque ici ? C'est exactement ce qu'on peut construire ensemble.</p>
+        <div class="work__body">
+          <span class="tag" data-i18n="portfolio.p2.tag">Red vs Blue</span>
+          <h3 class="work__title" data-i18n="portfolio.p2.title">RED-BLUE (STAR-WARS)</h3>
+          <p class="work__code"><span data-i18n="portfolio.codeLabel">Code d'île</span> · <b>7410-8193-7803</b></p>
+          <p class="work__meta"><span data-i18n="portfolio.publishedOn">Publiée sur le compte</span> <b>dragoniq2</b></p>
         </div>
       </article>
 
     </div>
 
-    <aside class="note reveal" data-reveal data-reveal-delay="4">
+    <aside class="note" data-reveal="up" data-reveal-delay="3">
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M12 11v6M12 7.4v.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 11v6M12 7.4v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <p data-i18n="portfolio.note">Certaines maps suivent exactement le brief du client, y compris le style visuel. Le rendu correspond à la demande, pas à ma direction artistique.</p>
     </aside>
@@ -306,31 +314,36 @@
 </section>
 
 <!-- ======================= PROCESS ======================= -->
-<section class="section" id="process" aria-labelledby="processTitle">
+<section class="sec sec--magenta" id="process" aria-labelledby="processTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,30 C220,90 520,96 840,52 C1100,16 1290,70 1440,44 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--7"></span><span class="blob blob--8"></span></div>
+
   <div class="shell">
     <header class="sectionHead">
-      <p class="kicker reveal" data-reveal data-i18n="process.kicker">Process</p>
-      <h2 class="sectionTitle reveal" data-reveal data-reveal-delay="1" id="processTitle" data-i18n="process.title">Quatre étapes, zéro flou</h2>
-      <p class="sectionLead reveal" data-reveal data-reveal-delay="2" data-i18n="process.lead">Du premier message à la map publiée, vous savez toujours où en est le projet.</p>
+      <p class="kicker" data-reveal="left" data-i18n="process.kicker">Process</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="processTitle" data-i18n="process.title">Quatre étapes, zéro flou</h2>
+      <p class="sectionLead" data-reveal="right" data-reveal-delay="2" data-i18n="process.lead">Du premier message à la map publiée, vous savez toujours où en est le projet.</p>
     </header>
 
     <ol class="steps">
-      <li class="step reveal" data-reveal data-reveal-delay="1">
+      <li class="step" data-reveal="left" data-reveal-delay="1">
         <span class="step__num" aria-hidden="true">01</span>
         <h3 class="step__title" data-i18n="process.s1.title">Tu ouvres un ticket</h3>
         <p class="step__desc" data-i18n="process.s1.desc">Rejoins le Discord, ouvre un ticket et décris ton idée en quelques lignes. Aucune préparation technique nécessaire.</p>
       </li>
-      <li class="step reveal" data-reveal data-reveal-delay="2">
+      <li class="step" data-reveal="left" data-reveal-delay="2">
         <span class="step__num" aria-hidden="true">02</span>
         <h3 class="step__title" data-i18n="process.s2.title">On cadre le projet</h3>
         <p class="step__desc" data-i18n="process.s2.desc">Mode de jeu, ambiance, références, contraintes, délais. Tu reçois un devis gratuit et un périmètre clair sous 24 h.</p>
       </li>
-      <li class="step reveal" data-reveal data-reveal-delay="3">
+      <li class="step" data-reveal="right" data-reveal-delay="3">
         <span class="step__num" aria-hidden="true">03</span>
         <h3 class="step__title" data-i18n="process.s3.title">Je développe</h3>
         <p class="step__desc" data-i18n="process.s3.desc">Level design, devices, code Verse, optimisation et tests de jeu. Tu suis l'avancement avec des points réguliers.</p>
       </li>
-      <li class="step reveal" data-reveal data-reveal-delay="4">
+      <li class="step" data-reveal="right" data-reveal-delay="4">
         <span class="step__num" aria-hidden="true">04</span>
         <h3 class="step__title" data-i18n="process.s4.title">Livraison + révisions</h3>
         <p class="step__desc" data-i18n="process.s4.desc">La map est publiée avec son code d'île. On ajuste ensemble les derniers détails jusqu'à ce que le rendu colle au brief.</p>
@@ -340,40 +353,70 @@
 </section>
 
 <!-- ======================= PRICING ======================= -->
-<section class="section section--tight" id="pricing" aria-labelledby="pricingTitle">
+<section class="sec sec--orange" id="pricing" aria-labelledby="pricingTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,58 C240,4 540,20 860,62 C1120,96 1310,40 1440,62 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--9"></span></div>
+
   <div class="shell">
-    <div class="quote reveal" data-reveal>
-      <span class="quote__ring" aria-hidden="true"></span>
+    <div class="quote" data-reveal="up">
       <p class="kicker" data-i18n="pricing.kicker">Tarifs</p>
       <h2 class="quote__title" id="pricingTitle" data-i18n="pricing.title">Chaque projet est unique — devis gratuit sous 24 h</h2>
       <p class="quote__desc" data-i18n="pricing.desc">Pas de grille figée : le prix dépend de la taille de la map, de la complexité du gameplay et du délai. Décris ton projet, tu reçois une estimation ferme.</p>
-      <a class="btn btn--accent btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="pricing.cta">Demander mon devis</a>
+      <a class="btn btn--solid btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="pricing.cta">Demander mon devis</a>
       <p class="quote__note" data-i18n="pricing.note">Gratuit, sans engagement.</p>
     </div>
   </div>
 </section>
 
-<!-- ======================= CONTACT ======================= -->
-<section class="section contact" id="contact" aria-labelledby="contactTitle">
-  <div class="shell contact__inner">
-    <p class="kicker reveal" data-reveal data-i18n="contact.kicker">Contact</p>
-    <h2 class="contact__title reveal" data-reveal data-reveal-delay="1" id="contactTitle" data-i18n="contact.title">On commande sur Discord</h2>
-    <p class="contact__desc reveal" data-reveal data-reveal-delay="2" data-i18n="contact.desc">Toutes les commandes passent par un ticket sur le serveur. C'est là qu'on discute du brief, du devis et de l'avancement du projet.</p>
+<!-- ======================= MARQUEE B ======================= -->
+<div class="marquee marquee--violet" aria-hidden="true">
+  <div class="marquee__row">
+    <span class="marquee__track marquee__track--outline" data-marquee>UEFN · 1V1 · TYCOON · BOX FIGHT · RP · SUR MESURE · </span>
+  </div>
+  <div class="marquee__row marquee__row--reverse">
+    <span class="marquee__track" data-marquee>UEFN · 1V1 · TYCOON · BOX FIGHT · RP · SUR MESURE · </span>
+  </div>
+</div>
 
-    <a class="discord reveal" data-reveal data-reveal-delay="3" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+<!-- ======================= CONTACT ======================= -->
+<section class="sec sec--plum contact" id="contact" aria-labelledby="contactTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,52 C280,96 580,8 900,40 C1140,64 1320,92 1440,58 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true">
+    <span class="blob blob--10"></span>
+    <svg class="morph morph--contact" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <path fill="rgba(124,58,237,.5)">
+        <animate attributeName="d" dur="20s" repeatCount="indefinite"
+          values="M300,110 C430,110 510,210 500,330 C490,450 390,510 280,500 C160,490 90,390 100,270 C110,160 190,110 300,110 Z;
+                  M290,90 C420,110 520,220 500,340 C480,470 350,530 240,500 C130,470 80,350 110,240 C140,130 200,80 290,90 Z;
+                  M310,120 C440,140 510,250 490,360 C470,470 360,520 250,500 C140,480 90,370 110,260 C130,160 210,110 310,120 Z;
+                  M300,110 C430,110 510,210 500,330 C490,450 390,510 280,500 C160,490 90,390 100,270 C110,160 190,110 300,110 Z"/>
+      </path>
+    </svg>
+  </div>
+
+  <div class="shell contact__inner">
+    <p class="kicker" data-reveal="up" data-i18n="contact.kicker">Contact</p>
+    <h2 class="contact__title" data-reveal="up" data-reveal-delay="1" id="contactTitle" data-i18n="contact.title">On commande sur Discord</h2>
+    <p class="contact__desc" data-reveal="up" data-reveal-delay="2" data-i18n="contact.desc">Toutes les commandes passent par un ticket sur le serveur. C'est là qu'on discute du brief, du devis et de l'avancement du projet.</p>
+
+    <a class="discord" data-reveal="up" data-reveal-delay="3" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
         <path d="M19.3 5.6A16 16 0 0 0 15.3 4.4l-.2.4a12 12 0 0 1 3.5 1.7 14 14 0 0 0-12.2 0 12 12 0 0 1 3.5-1.7l-.2-.4A16 16 0 0 0 5.7 5.6C3.2 9.3 2.5 12.9 2.8 16.4a16 16 0 0 0 4.9 2.5l.9-1.5a10 10 0 0 1-1.6-.8l.4-.3a11 11 0 0 0 9.2 0l.4.3a10 10 0 0 1-1.6.8l.9 1.5a16 16 0 0 0 4.9-2.5c.4-4.1-.6-7.6-2.9-10.8zM9.5 14.2c-1 0-1.7-.9-1.7-1.9s.8-1.9 1.7-1.9 1.8.9 1.7 1.9-.7 1.9-1.7 1.9zm5 0c-1 0-1.7-.9-1.7-1.9s.8-1.9 1.7-1.9 1.8.9 1.7 1.9-.7 1.9-1.7 1.9z" fill="currentColor"/>
       </svg>
       <span class="discord__text">
         <span class="discord__label" data-i18n="contact.discordLabel">Rejoindre le serveur</span>
         <span class="discord__url">discord.gg/PPKyGfJTQ</span>
       </span>
-      <svg class="discord__arrow" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-        <path d="M6 18 18 6M9 6h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg class="discord__arrow" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <path d="M6 18 18 6M9 6h9v9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
 
-    <p class="contact__note reveal" data-reveal data-reveal-delay="4" data-i18n="contact.note">Ouvre un ticket dans le salon dédié pour lancer une commande.</p>
+    <p class="contact__note" data-reveal="up" data-reveal-delay="4" data-i18n="contact.note">Ouvre un ticket dans le salon dédié pour lancer une commande.</p>
   </div>
 </section>
 </main>
@@ -383,12 +426,7 @@
   <div class="shell footer__inner">
     <div class="footer__brand">
       <a class="logo logo--sm" href="#top" aria-label="DragonIQ.Studio">
-        <span class="logo__mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="24" height="24" focusable="false">
-            <path d="M9 7h6c5.2 0 9 3.6 9 9s-3.8 9-9 9H9z" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linejoin="round"/>
-            <circle cx="20" cy="16" r="1.9" fill="url(#lg)"/>
-          </svg>
-        </span>
+        <span class="logo__disc"><img class="logo__img" src="assets/logo.png" alt="" width="52" height="52" loading="lazy" decoding="async"></span>
         <span class="logo__text">DragonIQ<span class="logo__dot">.</span>Studio</span>
       </a>
       <p class="footer__tagline" data-i18n="footer.tagline">Maps Fortnite UEFN, conçues et développées sur mesure.</p>
@@ -421,8 +459,8 @@
   <div class="modal__panel" id="modalPanel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
     <button class="modal__close" type="button" data-modal-close
             data-i18n="a11y.closeModal" data-i18n-attr="aria-label" aria-label="Fermer">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
-        <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
     </button>
     <div class="modal__media" id="modalMedia" aria-hidden="true"></div>
