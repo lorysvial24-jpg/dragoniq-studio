@@ -15,12 +15,19 @@ npx http-server . -p 8080
 ## Structure
 
 ```
-index.html     Sections + SEO (OG, Twitter Card, JSON-LD Organization)
-styles.css     Tokens & palettes de section -> reset -> chrome -> primitives -> sections -> marquee -> modale -> motion
+index.html     Loader + sections + SEO (OG, Twitter Card, JSON-LD Organization)
+styles.css     Tokens & palettes -> reset -> chrome -> primitives -> sections -> marquee -> modale
+               -> loader -> son -> portfolio scroll -> versus -> FAQ -> motion
 i18n.js        Dictionnaires des 6 langues (objet plat cle -> texte)
-main.js        i18n, marquees, scroll, reveals, tilt 3D, curseur, ripple, modale FLIP, nav mobile
+main.js        i18n, son, loader, marquees, scroll, reveals, tilt 3D, curseur, ripple,
+               modale FLIP, portfolio scroll, FAQ, nav mobile
 assets/        Logo, miniatures des maps
 ```
+
+Ordre des sections : hero (violet) -> bandeau cyan -> services (bleu electrique) ->
+portfolio (bleu puis cramoisi, selon la map) -> versus (creme, texte sombre) ->
+process (magenta) -> tarifs (orange, texte sombre) -> FAQ (turquoise profond) ->
+bandeau violet -> contact (prune).
 
 ## Le systeme de couleurs
 
@@ -49,6 +56,52 @@ contraste du couple `--sec-bg` / `--sec-ink-soft` (viser 4.5:1 minimum).
 Le header detecte la section qu'il survole et bascule son encre via `data-tone`
 (`light` / `dark`) — la liste des fonds clairs est dans `collectToneBlocks()` de `main.js`.
 
+## Ecran de chargement
+
+Le pourcentage suit le **vrai** chargement : `initLoader()` liste les `src` de toutes
+les `<img>` de la page, les recharge via des objets `Image()` detaches (ce qui contourne
+`loading="lazy"`), et compte une unite supplementaire pour `document.fonts.ready`. Le
+compteur affiche se rapproche de la valeur reelle sans jamais la depasser — il n'y a
+aucun timer decoratif.
+
+Un filet de securite force la fin au bout de 8 s pour ne jamais bloquer un visiteur
+derriere une requete qui ne repond pas. Sans JavaScript, un `<noscript>` masque le loader.
+Une fois termine, il se retire vers le haut et **c'est seulement a ce moment** que les
+revelations au scroll s'initialisent, pour que le hero s'anime vraiment a l'arrivee.
+
+## Sons
+
+Tout est synthetise avec la Web Audio API : aucun fichier, aucune dependance.
+
+| Son      | Quand                          | Synthese                                  |
+| -------- | ------------------------------ | ----------------------------------------- |
+| `pop`    | survol cartes / boutons / liens | sinus 620 -> 880 Hz, 70 ms                |
+| `click`  | pression                        | triangle 340 -> 190 Hz + sinus 900 Hz     |
+| `whoosh` | ouverture / fermeture de modale | bruit blanc filtre en bande, balaye       |
+| `chord`  | changement de section au scroll | triade majeure en trois sinus decales     |
+
+Regles appliquees :
+
+- **Coupe par defaut.** Le bouton du header (toujours visible, y compris sur mobile)
+  bascule l'etat, memorise dans `localStorage` (`diq-sound`).
+- **Aucun son avant un geste utilisateur** : l'`AudioContext` n'est meme pas cree tant
+  que le visiteur n'a pas clique ou tape une touche (les navigateurs le bloqueraient).
+- **Desactive si `prefers-reduced-motion` est actif** : le bouton est alors masque.
+- Le `pop` est limite a un toutes les 70 ms pour ne pas mitrailler au survol d'une grille.
+
+Pour changer le volume general, voir `master.gain.value` dans le module `Sound` de `main.js`.
+
+## Portfolio pilote par le scroll
+
+Chaque map occupe un ecran (`.map`, `min-height: 100svh`). Un IntersectionObserver
+detecte la map active, applique `tone-1` / `tone-2` sur la section — ce qui repeint
+tout son fond et son encre via les variables CSS — et met a jour les points lateraux.
+L'indicateur « Scroller pour decouvrir » disparait des que la premiere map est atteinte.
+
+Pour ajouter une map : duplique un `<article class="map" data-tone="N">`, ajoute un
+`.maps__dot` avec le `data-goto` correspondant, cree la palette `.sec--maps.tone-N`
+dans `styles.css`, puis les cles i18n et l'entree `MODALS` (voir plus bas).
+
 ## Assets
 
 | Fichier                   | Usage                                              | Format conseille    |
@@ -70,10 +123,27 @@ Si tu preferes une banniere 1200x630 dediee, ajoute-la dans `assets/` et pointe
 
 ## Ajouter un projet au portfolio
 
-1. Duplique un `<article class="work tilt" data-modal="pN">` dans `index.html`,
-   change `data-modal`, l'image et les cles `data-i18n`.
-2. Ajoute les cles `portfolio.pN.*` dans les 6 dictionnaires de `i18n.js`.
-3. Ajoute l'entree `pN` dans l'objet `MODALS` de `main.js` (`media`, `list`, `actions`).
+1. Duplique un `<article class="map" data-tone="N">` dans `index.html` et ajoute le
+   `.maps__dot` correspondant.
+2. Ajoute la palette `.sec--maps.tone-N` dans `styles.css`.
+3. Ajoute les cles `portfolio.pN.*` dans les 6 dictionnaires de `i18n.js`.
+4. Ajoute l'entree `pN` dans l'objet `MODALS` de `main.js` (`media`, `list`, `actions`).
+
+## Modifier la FAQ
+
+Les questions et reponses vivent uniquement dans `i18n.js` (`faq.q1`..`faq.q6`,
+`faq.a1`..`faq.a6`). Pour ajouter une entree, duplique un `.faq__item` dans
+`index.html` en incrementant les identifiants `faqB7` / `faqP7`, puis ajoute les
+cles dans les 6 langues.
+
+> Les reponses sur les **droits** et le **paiement** engagent commercialement :
+> relis-les et ajuste-les a ta pratique reelle avant la mise en ligne.
+
+## Modifier la section versus
+
+Quatre lignes `versus.rN.bad` / `versus.rN.good` dans `i18n.js`. Le texte barre utilise
+la balise `<s>` (semantiquement « ce n'est plus valable »), barree en rouge via
+`text-decoration-color`.
 
 ## Ajouter ou modifier un texte
 
@@ -103,6 +173,12 @@ Graph / Twitter et les bandeaux marquee.
   pour rester visible sur les fonds clairs comme sombres.
 - Animations en `transform` / `opacity`. Seuls les marquees utilisent une courbe `linear` :
   c'est le seul timing qui donne un defilement continu sans a-coup a la boucle.
+- FAQ en pattern *disclosure* (`aria-expanded` + `aria-controls`), points du portfolio
+  avec `aria-current`, loader en `role="progressbar"` avec `aria-valuenow` (le compteur
+  visuel est `aria-hidden` pour ne pas inonder les lecteurs d'ecran).
+- Attention aux surfaces translucides : un voile **blanc** pose sur une section de
+  ton moyen eclaircit le fond et fait passer le texte secondaire sous AA. Les cartes
+  du process et de la FAQ utilisent donc un voile sombre.
 
 ## Deploiement
 
