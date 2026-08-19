@@ -64,8 +64,10 @@ les `<img>` de la page, les recharge via des objets `Image()` detaches (ce qui c
 compteur affiche se rapproche de la valeur reelle sans jamais la depasser — il n'y a
 aucun timer decoratif.
 
-Un filet de securite force la fin au bout de 8 s pour ne jamais bloquer un visiteur
-derriere une requete qui ne repond pas. Sans JavaScript, un `<noscript>` masque le loader.
+L'adoucissement du compteur se fait sur une courbe en temps reel (et non par image),
+pour qu'un appareil qui tourne a 10 images par seconde ne rallonge pas l'ecran de
+chargement de plusieurs secondes. Un filet de securite force la fin au bout de 8 s
+pour ne jamais bloquer un visiteur derriere une requete qui ne repond pas. Sans JavaScript, un `<noscript>` masque le loader.
 Une fois termine, il se retire vers le haut et **c'est seulement a ce moment** que les
 revelations au scroll s'initialisent, pour que le hero s'anime vraiment a l'arrivee.
 
@@ -136,14 +138,36 @@ Les questions et reponses vivent uniquement dans `i18n.js` (`faq.q1`..`faq.q6`,
 `index.html` en incrementant les identifiants `faqB7` / `faqP7`, puis ajoute les
 cles dans les 6 langues.
 
-> Les reponses sur les **droits** et le **paiement** engagent commercialement :
-> relis-les et ajuste-les a ta pratique reelle avant la mise en ligne.
+> Les reponses de la FAQ engagent commercialement (paiement PayPal, publication sur
+> le compte createur DragonIQ, absence de remboursement, modifications hors prix de
+> base). Relis-les si ta pratique evolue.
 
 ## Modifier la section versus
 
 Quatre lignes `versus.rN.bad` / `versus.rN.good` dans `i18n.js`. Le texte barre utilise
 la balise `<s>` (semantiquement « ce n'est plus valable »), barree en rouge via
 `text-decoration-color`.
+
+## Atmosphere du hero
+
+Le fond du hero n'est pas un aplat : c'est un empilement de cinq `.cloud` (violet,
+magenta, bleu electrique, orange, cyan) en `mix-blend-mode: screen` sur une base tres
+sombre (`#1B0140`), plus deux blobs SVG qui se deforment en boucle. Chaque nuage a sa
+propre duree, son propre flou et son propre delai, donc les couleurs se recouvrent et
+se melangent en permanence sans jamais repasser par le meme etat.
+
+La profondeur vient de l'attribut `data-depth` : `initHeroDepth()` deplace chaque
+couche proportionnellement a sa valeur (les plans proches bougent jusqu'a cinq fois
+plus que les plans lointains), a la souris comme au scroll. Par-dessus, une lueur
+suit le curseur et un grain anime en `steps()` donne la texture.
+
+Le titre est decoupe mot par mot par `splitHeroTitle()` : chaque mot est masque par un
+conteneur en `overflow: hidden` et remonte avec un decalage de 85 ms. Le decoupage est
+refait a chaque changement de langue ; si l'entree a deja joue, les nouveaux mots
+s'affichent directement au lieu de rejouer l'animation.
+
+> L'animation d'un `<svg>` remplacerait la transformation de parallaxe posee sur le
+> meme element : la rotation des blobs est donc appliquee au `<path>` interieur.
 
 ## Ajouter ou modifier un texte
 
