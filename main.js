@@ -2,10 +2,13 @@
    DragonIQ.Studio — main.js
    Vanilla JS, no dependencies. Everything degrades gracefully.
    ============================================================ */
-(function () {
+(function (global) {
   'use strict';
 
   var DISCORD = 'https://discord.gg/PPKyGfJTQ';
+
+  /* Replace with the real Stripe payment link once it exists. */
+  var STRIPE_LINK = 'https://buy.stripe.com/REMPLACER';
   var I18N = window.DIQ_I18N;
 
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -473,7 +476,7 @@
       }
     };
     return api;
-  })();
+  })(window);
 
   function initSound() {
     var btn = $('#soundToggle');
@@ -1142,6 +1145,165 @@
     });
   }
 
+
+  /* ==========================================================
+     Small touches: back to top, copyable island codes, image
+     skeletons, page transition, konami easter egg.
+     ========================================================== */
+  function initBackToTop() {
+    var btn = $('#toTop');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' });
+    });
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        ticking = false;
+        btn.classList.toggle('is-on', (window.pageYOffset || 0) > window.innerHeight * .9);
+      });
+    }, { passive: true });
+  }
+
+  function initCopyCodes() {
+    $$('[data-copy]').forEach(function (btn) {
+      var code = btn.getAttribute('data-copy');
+      var labelEl = btn.querySelector('.copycode__text');
+      var original = labelEl ? labelEl.textContent : code;
+      var timer = null;
+
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var done = function () {
+          btn.classList.add('is-copied');
+          if (labelEl) labelEl.textContent = t('common.copied');
+          Sound.click();
+          window.clearTimeout(timer);
+          timer = window.setTimeout(function () {
+            btn.classList.remove('is-copied');
+            if (labelEl) labelEl.textContent = original;
+          }, 1800);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(done, function () { legacyCopy(code, done); });
+        } else {
+          legacyCopy(code, done);
+        }
+      });
+    });
+  }
+
+  function legacyCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { /* nothing else to try */ }
+    document.body.removeChild(ta);
+  }
+
+  function initImageSkeletons() {
+    $$('.map__media').forEach(function (holder) {
+      var img = holder.querySelector('img');
+      if (!img) return;
+      var reveal = function () {
+        img.classList.add('is-loaded');
+        holder.classList.remove('is-skeleton');
+      };
+      holder.classList.add('is-skeleton');
+      if (img.complete && img.naturalWidth) reveal();
+      else {
+        img.addEventListener('load', reveal);
+        img.addEventListener('error', reveal);
+      }
+    });
+  }
+
+  function initPageTransition() {
+    var fade = $('#pageFade');
+    if (!fade) return;
+    $$('a[href$=".html"], a[href="index.html"]').forEach(function (link) {
+      if (link.target === '_blank' || link.hasAttribute('download')) return;
+      link.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        var href = link.getAttribute('href');
+        if (!href || href.charAt(0) === '#') return;
+        if (reduced()) return;                     /* let the browser navigate plainly */
+        e.preventDefault();
+        fade.classList.add('is-on');
+        window.setTimeout(function () { window.location.href = href; }, 300);
+      });
+    });
+    /* Coming back via the bfcache must not leave the veil up. */
+    window.addEventListener('pageshow', function () { fade.classList.remove('is-on'); });
+  }
+
+  function initKonami() {
+    var SEQ = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+               'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    var pos = 0;
+
+    document.addEventListener('keydown', function (e) {
+      var k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      if (k === SEQ[pos]) {
+        pos++;
+        if (pos === SEQ.length) { pos = 0; party(); }
+      } else {
+        pos = (k === SEQ[0]) ? 1 : 0;
+      }
+    });
+
+    function party() {
+      var host = $('#konami');
+      if (!host || host.classList.contains('is-on')) return;
+      var note = host.querySelector('.konami__note');
+      if (note) note.textContent = t('konami.msg');
+      host.classList.add('is-on');
+      Sound.chord();
+
+      if (!reduced()) {
+        var colours = ['#7C3AED', '#22D3EE', '#E0117A', '#FF7A00', '#FFD166'];
+        for (var i = 0; i < 44; i++) spark(host, colours[i % colours.length], i);
+      }
+      window.setTimeout(function () {
+        host.classList.remove('is-on');
+        while (host.children.length > 1) host.removeChild(host.lastChild);
+      }, 3200);
+    }
+
+    function spark(host, colour, i) {
+      var el = document.createElement('span');
+      el.className = 'konami__spark';
+      el.style.background = colour;
+      el.style.left = (8 + Math.random() * 84) + 'vw';
+      el.style.top = '-30px';
+      el.style.opacity = '0';
+      host.appendChild(el);
+
+      var drift = (Math.random() - .5) * 260;
+      var spin = (Math.random() - .5) * 720;
+      var dur = 1800 + Math.random() * 1400;
+      var delay = i * 26;
+
+      if (el.animate) {
+        el.animate([
+          { transform: 'translate3d(0,0,0) rotate(0deg)', opacity: 1 },
+          { transform: 'translate3d(' + drift + 'px,' + (window.innerHeight + 80) + 'px,0) rotate(' + spin + 'deg)', opacity: 0 }
+        ], { duration: dur, delay: delay, easing: 'cubic-bezier(.3,.6,.5,1)', fill: 'forwards' });
+      } else {
+        el.style.opacity = '1';
+      }
+    }
+  }
+
   /* ==========================================================
      8. Mobile navigation
      ========================================================== */
@@ -1193,6 +1355,10 @@
   /* ==========================================================
      Boot
      ========================================================== */
+  function wireStripeLinks() {
+    $$('[data-stripe]').forEach(function (el) { el.setAttribute('href', STRIPE_LINK); });
+  }
+
   function boot() {
     var year = $('#year');
     if (year) year.textContent = String(new Date().getFullYear());
@@ -1212,6 +1378,12 @@
     initNav();
     initMaps();
     initFaq();
+    initBackToTop();
+    initCopyCodes();
+    initImageSkeletons();
+    initPageTransition();
+    initKonami();
+    wireStripeLinks();
 
     /* Reveals wait for the loader so the hero actually animates in
        behind the sweep instead of having played out of sight. */
@@ -1240,9 +1412,16 @@
     });
   }
 
+  /* Surface just enough for theme.js to drive the sound setting. */
+  global.DIQ = global.DIQ || {};
+  global.DIQ.setSound = function (on) { Sound.set(on, !!on); };
+  global.DIQ.getSound = function () { return Sound.isOn(); };
+  global.DIQ.t = t;
+  global.DIQ.STRIPE_LINK = STRIPE_LINK;
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {
     boot();
   }
-})();
+})(window);

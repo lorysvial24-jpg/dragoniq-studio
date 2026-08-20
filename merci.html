@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="fr" data-meta="builder.meta">
+<html lang="fr" data-meta="thanks.meta">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#130B30">
+<meta name="theme-color" content="#1C0433">
 
-<title data-i18n="builder.meta.title">Constructeur de map — DragonIQ.Studio</title>
-<meta name="description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique directement dans le navigateur, exporte-la en PNG et joins-la à ton ticket Discord.">
-<link rel="canonical" href="https://dragoniqstudio.com/builder.html">
+<title data-i18n="thanks.meta.title">Merci — DragonIQ.Studio</title>
+<meta name="description" data-i18n="thanks.meta.description" data-i18n-attr="content" content="Paiement confirmé. Rejoins le Discord pour lancer ton projet de map Fortnite.">
+<link rel="canonical" href="https://dragoniqstudio.com/merci.html">
+<meta name="robots" content="noindex">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DragonIQ.Studio">
-<meta property="og:url" content="https://dragoniqstudio.com/builder.html">
-<meta property="og:title" data-i18n="builder.meta.title" data-i18n-attr="content" content="Constructeur de map — DragonIQ.Studio">
-<meta property="og:description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique, exporte-la en PNG et joins-la à ton ticket Discord.">
+<meta property="og:title" data-i18n="thanks.meta.title" data-i18n-attr="content" content="Merci — DragonIQ.Studio">
+<meta property="og:description" data-i18n="thanks.meta.description" data-i18n-attr="content" content="Paiement confirmé.">
 <meta property="og:image" content="https://dragoniqstudio.com/assets/logo.png">
 <meta property="og:locale" content="fr_FR">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" data-i18n="builder.meta.title" data-i18n-attr="content" content="Constructeur de map — DragonIQ.Studio">
-<meta name="twitter:description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique, exporte-la en PNG et joins-la à ton ticket Discord.">
+<meta name="twitter:title" data-i18n="thanks.meta.title" data-i18n-attr="content" content="Merci — DragonIQ.Studio">
+<meta name="twitter:description" data-i18n="thanks.meta.description" data-i18n-attr="content" content="Paiement confirmé.">
 <meta name="twitter:image" content="https://dragoniqstudio.com/assets/logo.png">
 
 <link rel="icon" href="assets/logo.png" type="image/png">
@@ -29,7 +29,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="builder.css">
 <script>
 /* Apply the visitor's saved theme before first paint. */
 (function(){try{var s=JSON.parse(localStorage.getItem('diq-theme')||'{}'),r=document.documentElement,k;
@@ -43,15 +42,12 @@ r.style.setProperty('--u-'+k,'rgba('+parseInt(m.slice(0,2),16)+','+parseInt(m.sl
 else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 </script>
 </head>
-<body class="page-builder">
-<a class="skip-link" href="#builderMain" data-i18n="a11y.skip">Aller au contenu principal</a>
+
+<body class="page-thanks">
+<a class="skip-link" href="#thanksMain" data-i18n="a11y.skip">Aller au contenu principal</a>
 
 <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="progressBar"></span></div>
-
-<div class="cursor" id="cursor" aria-hidden="true">
-  <span class="cursor__dot"></span>
-  <span class="cursor__ring"></span>
-</div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
 
 <!-- ======================= HEADER ======================= -->
 <header class="header" id="header" data-tone="dark">
@@ -123,137 +119,30 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
   </div>
 </header>
 
-<main id="builderMain" class="sec sec--night bstage">
-  <div class="sec__fx" aria-hidden="true"><span class="blob blob--15"></span><span class="blob blob--16"></span></div>
-
-  <div class="shell bstage__head">
-    <p class="kicker" data-i18n="home.builder.kicker">Outil gratuit</p>
-    <h1 class="bstage__title" data-i18n="builder.pageTitle">Constructeur de map</h1>
-    <p class="bstage__lead" data-i18n="builder.pageLead">Dessine l'idée de ta map en quelques minutes, exporte-la en image et envoie-la avec ton ticket.</p>
+<main id="thanksMain" class="sec sec--plum thanks">
+  <div class="sec__fx" aria-hidden="true">
+    <span class="blob blob--10"></span>
+    <span class="blob blob--16"></span>
   </div>
 
-  <div class="shell">
-    <div class="bnotice" id="builderNotice" hidden>
-      <p data-i18n="builder.smallScreen">L'outil fonctionne au doigt, mais tu seras bien plus à l'aise sur ordinateur.</p>
-      <button class="bnotice__close" type="button" id="builderNoticeClose"
-              data-i18n="a11y.closeModal" data-i18n-attr="aria-label" aria-label="Fermer">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-        </svg>
-      </button>
+  <div class="shell thanks__inner">
+    <div class="thanks__check" aria-hidden="true">
+      <svg viewBox="0 0 80 80" width="80" height="80" focusable="false">
+        <circle class="thanks__ring" cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width="4"/>
+        <path class="thanks__tick" d="M25 41.5 35.5 52 56 30" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
 
-    <div class="builder">
-      <!-- toolbar -->
-      <div class="btoolbar">
-        <label class="bfield">
-          <span class="bfield__label" data-i18n="builder.projectLabel">Nom du projet</span>
-          <input class="bfield__input" id="builderName" type="text" autocomplete="off" maxlength="60"
-                 data-i18n="builder.projectPlaceholder" data-i18n-attr="placeholder" placeholder="Ma map">
-        </label>
+    <p class="kicker" data-i18n="thanks.kicker">Paiement confirmé</p>
+    <h1 class="thanks__title" data-i18n="thanks.title">Merci, on peut commencer</h1>
+    <p class="thanks__lead" data-i18n="thanks.lead">Ton paiement est bien passé.</p>
 
-        <label class="bfield">
-          <span class="bfield__label" data-i18n="builder.themeLabel">Thème</span>
-          <select class="bfield__select" id="builderTheme">
-            <option value="fortnite" data-i18n="builder.theme.fortnite">Fortnite classique</option>
-            <option value="desert" data-i18n="builder.theme.desert">Désert</option>
-            <option value="snow" data-i18n="builder.theme.snow">Neige</option>
-            <option value="neon" data-i18n="builder.theme.neon">Néon</option>
-            <option value="horror" data-i18n="builder.theme.horror">Horreur</option>
-          </select>
-        </label>
-
-        <div class="bstat">
-          <span class="bstat__label" data-i18n="builder.blocks">Blocs</span>
-          <span class="bstat__value" id="builderCount">0</span>
-        </div>
-
-        <div class="bstat bstat--level">
-          <span class="bstat__label" data-i18n="builder.level">Niveau</span>
-          <div class="blevel">
-            <button class="blevel__btn" type="button" id="builderLevelDown" aria-label="-">−</button>
-            <span class="bstat__value" id="builderLevel">1</span>
-            <button class="blevel__btn" type="button" id="builderLevelUp" aria-label="+">+</button>
-          </div>
-        </div>
-
-        <button class="btool" type="button" id="builderTopView">
-          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-            <path d="M4 8.5 12 4l8 4.5-8 4.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
-            <path d="M4 13.5 12 18l8-4.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
-          </svg>
-          <span data-i18n="builder.topView">Vue de dessus</span>
-        </button>
-
-        <button class="btool" type="button" data-modal="help" aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.9"/>
-            <path d="M9.6 9.4a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.7-.9 1.3v.4M12 16.6v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-          </svg>
-          <span data-i18n="builder.help">Aide</span>
-        </button>
-      </div>
-
-      <!-- palette -->
-      <aside class="bpalette" id="builderPaletteWrap">
-        <button class="bpalette__toggle" type="button" id="builderPaletteToggle" aria-expanded="false" aria-controls="builderPalette">
-          <span data-i18n="builder.palette">Palette</span>
-        </button>
-        <div class="bpalette__list" id="builderPalette"></div>
-      </aside>
-
-      <!-- stage -->
-      <div class="bcanvas">
-        <canvas id="builderCanvas" role="img"
-                data-i18n="builder.pageTitle" data-i18n-attr="aria-label" aria-label="Constructeur de map"></canvas>
-
-        <div class="bactions">
-          <button class="btool" type="button" id="builderEraser" aria-pressed="false">
-            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-              <path d="m14 4 6 6-8 8H6l-2-2z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
-              <path d="M9 18 20 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-            </svg>
-            <span data-i18n="builder.eraser">Gomme</span>
-          </button>
-          <button class="btool" type="button" id="builderRotate">
-            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-              <path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span data-i18n="builder.rotate">Pivoter</span>
-          </button>
-          <button class="btool" type="button" id="builderUndo" disabled>
-            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-              <path d="M4 10h9a5 5 0 0 1 0 10H8M4 10l4-4M4 10l4 4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span data-i18n="builder.undo">Annuler</span>
-          </button>
-          <button class="btool" type="button" id="builderRedo" disabled>
-            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-              <path d="M20 10h-9a5 5 0 0 0 0 10h5M20 10l-4-4M20 10l-4 4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span data-i18n="builder.redo">Rétablir</span>
-          </button>
-          <button class="btool btool--danger" type="button" id="builderClear">
-            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
-              <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span data-i18n="builder.clear">Tout effacer</span>
-          </button>
-          <span class="bsaved" data-i18n="builder.autosaved">Sauvegarde automatique</span>
-        </div>
-
-        <p class="btoast" id="builderToast" role="status" aria-live="polite"></p>
-      </div>
-
-      <!-- export -->
-      <div class="bexport">
-        <button class="btn btn--solid btn--lg" type="button" id="builderExport" data-i18n="builder.export">Exporter en PNG</button>
-        <div class="bexport__side">
-          <p class="bexport__hint" data-i18n="builder.discordHint">Exporte ton PNG, puis joins-le à ton ticket sur le Discord.</p>
-          <a class="btn btn--outline" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="builder.discord">Envoyer sur Discord</a>
-        </div>
-      </div>
+    <div class="thanks__actions">
+      <a class="btn btn--solid btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="thanks.cta">Rejoindre le Discord pour lancer le projet</a>
+      <a class="btn btn--outline" href="index.html" data-i18n="thanks.back">Retour à l'accueil</a>
     </div>
+
+    <p class="thanks__note" data-i18n="thanks.note">Garde ton reçu Stripe à portée de main.</p>
   </div>
 </main>
 
@@ -324,8 +213,6 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
 <script src="i18n.js"></script>
 <script src="main.js"></script>
-<script src="builder.js"></script>
-<script src="builder3d.js"></script>
 <script src="theme.js"></script>
 </body>
 </html>
