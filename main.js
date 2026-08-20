@@ -8,7 +8,7 @@
   var DISCORD = 'https://discord.gg/PPKyGfJTQ';
 
   /* Replace with the real Stripe payment link once it exists. */
-  var STRIPE_LINK = 'https://buy.stripe.com/REMPLACER';
+  var STRIPE_LINK = 'https://buy.stripe.com/9B6fZg4bugQJ8zR6ON1sQ00';
 
   /* ==========================================================
      TUNABLES — the three tables below are meant to be edited by
