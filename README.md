@@ -21,19 +21,23 @@ merci.html     Page de confirmation apres paiement Stripe
 builder.css    Styles propres au constructeur (le reste vient de styles.css)
 builder.js     Moteur isometrique 2D : apercu d'accueil + repli du constructeur
 builder3d.js   Constructeur 3D three.js (scene, orbite maison, export)
+hero3d.js      Diorama low-poly du hero (ile flottante three.js, repli automatique)
+tools.js       Estimateur de prix, generateur de brief, carrousel de temoignages
 theme.js       Panneau de personnalisation du theme cote visiteur
 styles.css     Tokens & palettes -> reset -> chrome -> primitives -> sections -> marquee -> modale
                -> loader -> son -> portfolio scroll -> versus -> FAQ -> motion
 i18n.js        Dictionnaires des 6 langues (objet plat cle -> texte)
 main.js        i18n, son, loader, marquees, scroll, reveals, tilt 3D, curseur, ripple,
-               modale FLIP, portfolio scroll, FAQ, nav mobile
+               modale FLIP, portfolio scroll, FAQ, nav mobile, badge de dispo, compteurs
+               + les constantes reglables : STRIPE_LINK, PRICING, STATS, AVAILABILITY
 assets/        Logo, miniatures des maps
 ```
 
 Ordre des sections : hero (violet) -> bandeau cyan -> services (bleu electrique) ->
-portfolio (bleu puis cramoisi, selon la map) -> versus (creme, texte sombre) ->
-process (magenta) -> tarifs (orange, texte sombre) -> FAQ (turquoise profond) ->
-bandeau violet -> contact (prune).
+estimateur (vert profond) -> portfolio (bleu puis cramoisi, selon la map) ->
+bandeau de compteurs (nuit) -> versus (creme, texte sombre) -> constructeur (nuit) ->
+process (magenta) -> tarifs (orange, texte sombre) -> temoignages (jaune, texte sombre) ->
+FAQ (turquoise profond) -> bandeau violet -> contact (prune).
 
 ## Le systeme de couleurs
 
@@ -288,6 +292,10 @@ premier rendu**, pour eviter un flash aux couleurs d'origine. Pendant que le pan
 est ouvert, la classe `theming` coupe les transitions des sections : sans cela le
 fondu de 850 ms rendrait chaque color picker inutilisable.
 
+Le registre couvre les douze sections, estimateur et temoignages compris. Comme le
+diorama du hero lit ses couleurs sur `#hero`, chaque ecriture appelle aussi
+`DIQ_HERO3D.retheme()` : la scene 3D suit donc le theme au meme titre que le CSS.
+
 ## Le constructeur 3D
 
 `builder3d.js` construit une scene three.js : orbite implementee a la main (glisser
@@ -312,6 +320,79 @@ partagent `ELEMENTS`, `THEMES`, le stockage et les icones de palette.
 `https://buy.stripe.com/REMPLACER`. Tout element portant `data-stripe` recoit ce lien
 au chargement, donc il n'y a qu'un seul endroit a modifier. Stripe doit rediriger vers
 `merci.html` apres paiement.
+
+## Le diorama du hero
+
+`hero3d.js` remplace le fond du hero par une ile flottante low-poly en three.js :
+socle de terre, herbe, racines pendantes, trois maisons, un pont, des arbres, des
+rochers, un portail lumineux au centre et des particules qui derivent a des vitesses
+differentes. L'ile tourne lentement sur elle-meme ; la rotation ralentit et s'incline
+en suivant la souris.
+
+* **Budget** : `TRI_BUDGET = 5000` triangles. La scene reelle en compte ~870 ; si tu
+  ajoutes des elements, `tally()` previent dans la console au-dela du budget.
+* **Performance** : `powerPreference: 'high-performance'`, boucle de rendu arretee des
+  que le hero sort de l'ecran (IntersectionObserver) ou que l'onglet passe en arriere-plan,
+  et moins de particules sur pointeur grossier (7 au lieu de 16).
+* **Couleurs** : la scene lit les variables `--sec-*` calculees sur `#hero`, donc le
+  theme choisi par le visiteur la repeint. Chaque ecriture du panneau appelle
+  `DIQ_HERO3D.retheme()` (regroupe sur une frame).
+* **Repli** : si `prefers-reduced-motion` est actif, si WebGL manque, ou si le CDN ne
+  repond pas en 7 s, `#heroScene` passe en `data-mode="fallback"` et le fond de degrade
+  anime reste seul. Le titre est lisible dans les deux cas.
+
+> Meme reserve que pour le constructeur 3D : cdnjs est bloque dans l'environnement de
+> developpement, donc le rendu WebGL n'a pas pu etre vu. La scene a ete exercee contre
+> un stub de l'API three.js (assemblage, comptage des triangles, pause/reprise,
+> retheme). **A regarder une premiere fois sur un vrai poste.**
+
+## Estimateur de prix
+
+Les tarifs vivent dans l'objet `PRICING`, en tete de `main.js` :
+
+```js
+var PRICING = {
+  base:    { '1v1': 30, boxfight: 40, tycoon: 60, rp: 60, zonewars: 60, other: 60 },
+  size:    { small: 1, medium: 1.6, large: 2.4 },   // multiplicateur sur la base
+  options: { verse: 25, decor: 20, multi: 30, hud: 15, shop: 20 },  // supplement fixe
+  rush: 1.35,      // multiplicateur delai urgent
+  spread: 0.35,    // haut de fourchette = bas x (1 + spread)
+  currency: '€'
+};
+```
+
+Calcul : `base x multiplicateur de taille + somme des options`, puis `x rush` si le
+delai est urgent. Les deux bornes sont arrondies au multiple de 5 le plus proche pour
+qu'elles se lisent comme un devis. A chaque changement les chiffres defilent jusqu'a la
+nouvelle valeur ; sous `prefers-reduced-motion` ils sautent directement. Un
+`role="status"` invisible annonce la fourchette finale une fois l'animation posee, pour
+ne pas bavarder pendant le defilement.
+
+## Generateur de brief
+
+Le bouton **Preparer ma demande** (carte de l'estimateur et section contact) ouvre une
+modale a sept questions, une a la fois : type de map, nombre de joueurs, ambiance,
+mecaniques, references, delai, budget. Entree passe a la suivante, Maj+Entree garde le
+saut de ligne, **Passer** laisse la reponse vide. A la fin le texte formate s'affiche
+dans un bloc avec un bouton de copie, un lien vers le ticket Discord et un rappel qu'on
+peut joindre le PNG exporte depuis le constructeur.
+
+Les libelles du brief sortent des cles `brief.l1` a `brief.l7` : changer de langue en
+cours de questionnaire conserve les reponses et retraduit tout.
+
+## Preuve sociale
+
+* **Compteurs** : les trois chiffres du bandeau viennent de `STATS` en tete de
+  `main.js` (`maps`, `clients`, `years`). Ce sont des **placeholders** : mets les vrais
+  chiffres avant la mise en ligne.
+* **Temoignages** : trois cartes dans un carrousel (fleches, points, fleches du clavier
+  sur les points). Defilement automatique toutes les 7 s, en pause au survol, au focus
+  et onglet cache, desactive sous `prefers-reduced-motion`. Les textes sont des
+  placeholders traduits (`proof.t1.*` a `proof.t3.*`) — **a remplacer par de vrais
+  retours**.
+* **Badge de disponibilite** : la constante `AVAILABILITY` en tete de `main.js` vaut
+  `'open'` (vert, point qui pulse) ou `'full'` (orange). Le badge est masque sous 860 px
+  pour laisser la place au burger.
 
 ## Deploiement
 

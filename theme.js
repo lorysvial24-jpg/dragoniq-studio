@@ -20,6 +20,8 @@
       bg: '#1B0140', ink: '#FFFFFF', 'ink-soft': '#DCC9FF', accent: '#22D3EE', glow: '#22D3EE' },
     { id: 'services', label: 'theme.sec.services',
       bg: '#1B2CE0', ink: '#FFFFFF', 'ink-soft': '#D2DBFF', accent: '#FFD166', glow: '#FFD166' },
+    { id: 'estimate', label: 'theme.sec.estimate',
+      bg: '#0C5C31', ink: '#FFFFFF', 'ink-soft': '#C6F2D8', accent: '#FFD166', glow: '#FFD166' },
     { id: 'maps1',    label: 'theme.sec.maps1',
       bg: '#101FBE', 'ink-soft': '#CFD6FF', accent: '#22D3EE', glow: '#22D3EE' },
     { id: 'maps2',    label: 'theme.sec.maps2',
@@ -32,6 +34,8 @@
       bg: '#130B30', ink: '#FFFFFF', 'ink-soft': '#C6BAF0', accent: '#22D3EE', glow: '#22D3EE' },
     { id: 'pricing',  label: 'theme.sec.pricing',
       bg: '#FF7A00', ink: '#2B1004', 'ink-soft': '#61300F', accent: '#2E0B63', glow: '#2E0B63' },
+    { id: 'proof',    label: 'theme.sec.proof',
+      bg: '#FFC93C', ink: '#22160A', 'ink-soft': '#5E4415', accent: '#7A1E5A', glow: '#7A1E5A' },
     { id: 'faq',      label: 'theme.sec.faq',
       bg: '#06667F', ink: '#FFFFFF', 'ink-soft': '#B4E9F7', accent: '#FFD166', glow: '#FFD166' },
     { id: 'contact',  label: 'theme.sec.contact',
@@ -63,6 +67,8 @@
       radius: 18, grain: 0.05, blur: 1.1,
       'hero-bg': '#08070E', 'services-bg': '#0B1030', 'maps1-bg': '#0A1030', 'maps2-bg': '#2A0910',
       'versus-bg': '#131119', 'versus-ink': '#F2EFF7', 'versus-ink-soft': '#A79CBD',
+      'estimate-bg': '#06231A', 'proof-bg': '#2B2306', 'proof-ink': '#FFEFC2', 'proof-ink-soft': '#C6A75E',
+      'proof-accent': '#FFC93C', 'proof-glow': '#FFC93C',
       'process-bg': '#26091A', 'builder-bg': '#0A0718', 'pricing-bg': '#2A1503',
       'pricing-ink': '#FFE9CF', 'pricing-ink-soft': '#C79C6C',
       'faq-bg': '#07202A', 'contact-bg': '#070510'
@@ -73,6 +79,9 @@
       'services-bg': '#1B0050', 'services-accent': '#00F0FF', 'services-glow': '#00F0FF',
       'maps1-bg': '#14005C', 'maps1-accent': '#00F0FF', 'maps2-bg': '#4A0038', 'maps2-accent': '#FFE600',
       'versus-bg': '#F5E9FF', 'versus-ink': '#12002E', 'versus-ink-soft': '#5A3E7A', 'versus-accent': '#C400FF',
+      'estimate-bg': '#003B2A', 'estimate-accent': '#00F0FF', 'estimate-glow': '#00F0FF',
+      'proof-bg': '#FFE600', 'proof-ink': '#12002E', 'proof-ink-soft': '#4A3A00',
+      'proof-accent': '#5A0090', 'proof-glow': '#C400FF',
       'process-bg': '#7A0060', 'process-accent': '#00F0FF',
       'builder-bg': '#0D0030', 'pricing-bg': '#FF3D00', 'pricing-ink': '#20060A', 'pricing-ink-soft': '#63180C',
       'faq-bg': '#00404F', 'faq-accent': '#00F0FF', 'contact-bg': '#10002B', 'contact-accent': '#FF00A8',
@@ -84,6 +93,8 @@
       'services-bg': '#43558F', 'services-ink-soft': '#E2E8FF', 'services-accent': '#FFD9A8', 'services-glow': '#FFD9A8',
       'maps1-bg': '#3F5590', 'maps1-ink-soft': '#E2E8FF', 'maps2-bg': '#8E5560', 'maps2-ink-soft': '#FFE2E4',
       'versus-bg': '#FFF7F0', 'versus-ink': '#3B3450', 'versus-ink-soft': '#6E6484', 'versus-accent': '#8E7BD6',
+      'estimate-bg': '#3F6B5A', 'estimate-ink-soft': '#DDF2E8', 'estimate-accent': '#FFE0A6', 'estimate-glow': '#FFE0A6',
+      'proof-bg': '#F7DFA8', 'proof-ink': '#3A2E14', 'proof-ink-soft': '#6B5A2E', 'proof-accent': '#5E3456', 'proof-glow': '#8E5A83',
       'process-bg': '#8E5A83', 'process-ink-soft': '#FFE4F4', 'process-accent': '#FFE0A6',
       'builder-bg': '#3A3358', 'builder-ink-soft': '#DED6F5',
       'pricing-bg': '#F6C08A', 'pricing-ink': '#3A2410', 'pricing-ink-soft': '#6B4A2A', 'pricing-accent': '#4B3A7A',
@@ -121,8 +132,14 @@
     return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
   }
 
-  /* Turn one stored entry into the CSS custom property it drives. */
+  /* Turn one stored entry into the CSS custom property it drives. Every
+     write goes through the wrapper so the 3D hero always resamples. */
   function applyEntry(root, key, value) {
+    applyProperty(root, key, value);
+    retheme3D();
+  }
+
+  function applyProperty(root, key, value) {
     if (value === '' || value == null) { root.style.removeProperty('--u-' + key); return; }
     if (key === 'radius') { root.style.setProperty('--u-radius', value + 'px'); return; }
     if (key === 'grain') { root.style.setProperty('--u-grain', String(value)); return; }
@@ -146,6 +163,19 @@
     }
   }
 
+  /* The hero diorama reads its colours off #hero's computed style, which
+     only settles after the --u-* writes above. Coalesce the repaint so
+     dragging a colour picker does not rebuild materials on every frame. */
+  var rethemeFrame = null;
+  function retheme3D() {
+    if (rethemeFrame) window.cancelAnimationFrame(rethemeFrame);
+    rethemeFrame = window.requestAnimationFrame(function () {
+      rethemeFrame = null;
+      var scene = global.DIQ_HERO3D;
+      if (scene && scene.retheme) scene.retheme();
+    });
+  }
+
   function clearAll() {
     var root = document.documentElement;
     root.removeAttribute('data-motion');
@@ -154,6 +184,7 @@
       var name = decl.split(':')[0].trim();
       if (name.indexOf('--u-') === 0) root.style.removeProperty(name);
     });
+    retheme3D();
   }
 
   /* ============================================================
