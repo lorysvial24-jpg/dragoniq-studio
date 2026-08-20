@@ -5,14 +5,14 @@
    ============================================================ */
 
 .sec--night {
-  --sec-bg: #130B30;
-  --sec-ink: #FFFFFF;
-  --sec-ink-soft: #C6BAF0;
-  --sec-accent: #22D3EE;
-  --sec-glow: rgba(34, 211, 238, .55);
-  --sec-btn-bg: #22D3EE;
-  --sec-btn-ink: #05161B;
-  --sec-shadow: rgba(3, 1, 20, .7);
+  --sec-bg: var(--u-builder-bg, #130B30);
+  --sec-ink: var(--u-builder-ink, #FFFFFF);
+  --sec-ink-soft: var(--u-builder-ink-soft, #C6BAF0);
+  --sec-accent: var(--u-builder-accent, #22D3EE);
+  --sec-glow: var(--u-builder-glow, rgba(34, 211, 238, .55));
+  --sec-btn-bg: var(--u-builder-btn-bg, #22D3EE);
+  --sec-btn-ink: var(--u-builder-btn-ink, #05161B);
+  --sec-shadow: var(--u-builder-shadow, rgba(3, 1, 20, .7));
 }
 
 .blob--15 { width: 44vw; height: 44vw; top: 8%; left: -12%; background: rgba(124, 58, 237, .5); }

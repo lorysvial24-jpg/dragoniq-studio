@@ -510,6 +510,8 @@
   function initEditor() {
     var canvas = $('#builderCanvas');
     if (!canvas) return;
+    if (started2D) return;
+    started2D = true;
     var ctx = canvas.getContext('2d');
 
     var state = {
@@ -1192,10 +1194,21 @@
     global.requestAnimationFrame(frame);
   }
 
+  var started2D = false;
+
   function boot() {
     initPreview();
-    initEditor();
+    /* On the builder page builder3d.js decides which engine runs, once it
+       knows whether three.js arrived. Everywhere else there is no canvas. */
+    if (!document.getElementById('builderCanvas')) return;
+    if (!document.querySelector('script[src$="builder3d.js"]')) initEditor();
   }
+
+  /* Shared with builder3d.js: the icons stay identical, and it calls
+     start2D() when three.js could not be reached. */
+  B.iconFor = iconFor;
+  B.t = t;
+  B.start2D = initEditor;
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

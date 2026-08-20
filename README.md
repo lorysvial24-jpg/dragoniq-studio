@@ -16,9 +16,12 @@ npx http-server . -p 8080
 
 ```
 index.html     Loader + sections + SEO (OG, Twitter Card, JSON-LD Organization)
-builder.html   Constructeur de map isometrique (header/footer/modale partages)
+builder.html   Constructeur de map (header/footer/modale partages)
+merci.html     Page de confirmation apres paiement Stripe
 builder.css    Styles propres au constructeur (le reste vient de styles.css)
-builder.js     Moteur isometrique : projection, formes, themes, editeur, export
+builder.js     Moteur isometrique 2D : apercu d'accueil + repli du constructeur
+builder3d.js   Constructeur 3D three.js (scene, orbite maison, export)
+theme.js       Panneau de personnalisation du theme cote visiteur
 styles.css     Tokens & palettes -> reset -> chrome -> primitives -> sections -> marquee -> modale
                -> loader -> son -> portfolio scroll -> versus -> FAQ -> motion
 i18n.js        Dictionnaires des 6 langues (objet plat cle -> texte)
@@ -206,6 +209,8 @@ Graph / Twitter et les bandeaux marquee.
 - FAQ en pattern *disclosure* (`aria-expanded` + `aria-controls`), points du portfolio
   avec `aria-current`, loader en `role="progressbar"` avec `aria-valuenow` (le compteur
   visuel est `aria-hidden` pour ne pas inonder les lecteurs d'ecran).
+- Barre de progression de lecture, retour en haut, copie du code d'ile, skeleton sur
+  les miniatures, transition entre pages et konami code sont tous dans `main.js`.
 - Attention aux surfaces translucides : un voile **blanc** pose sur une section de
   ton moyen eclaircit le fond et fait passer le texte secondaire sous AA. Les cartes
   du process et de la FAQ utilisent donc un voile sombre.
@@ -254,6 +259,59 @@ zoomer. Sous 760 px un bandeau suggere l'ordinateur sans jamais bloquer l'outil.
 
 **Sauvegarde.** Le plan est ecrit dans `localStorage` (`diq-builder`) avec un debounce
 de 400 ms, sous forme compacte `[x, y, z, type, rotation]`.
+
+## Personnalisation du theme par le visiteur
+
+Chaque couleur de section est declaree en deux temps :
+
+```css
+.sec--violet { --sec-bg: var(--u-hero-bg, #1B0140); }
+```
+
+Le panneau n'ecrit **que** les `--u-*` sur `:root`. Il ne lutte donc jamais contre la
+feuille de style sur la specificite, aucun `!important` n'est necessaire, et un
+visiteur qui ne touche a rien garde le design d'origine. Tout est stocke dans
+`localStorage` (`diq-theme`), donc strictement local a son appareil.
+
+Les controles sont **generes depuis un registre** (`SECTIONS` x `ROLES` dans
+`theme.js`) : ajouter une section au site, c'est ajouter une entree dans ce tableau.
+Les valeurs par defaut qui y figurent doivent refleter `styles.css` — ce sont elles
+qui alimentent les color pickers et le bouton Reinitialiser.
+
+Reglages globaux : rayon des coins, intensite des animations (`data-motion` sur
+`<html>`), grain, flou du fond, son, couleur et texte des boutons. Quatre themes
+predefinis (Defaut, Sombre, Neon, Pastel) repartent toujours d'une table rase, donc
+ils ne s'heritent jamais entre eux.
+
+Un court script inline dans le `<head>` de chaque page reapplique le theme **avant le
+premier rendu**, pour eviter un flash aux couleurs d'origine. Pendant que le panneau
+est ouvert, la classe `theming` coupe les transitions des sections : sans cela le
+fondu de 850 ms rendrait chaque color picker inutilisable.
+
+## Le constructeur 3D
+
+`builder3d.js` construit une scene three.js : orbite implementee a la main (glisser
+gauche pour tourner, molette pour zoomer, glisser droit pour deplacer), raycast sur un
+plan a la hauteur du niveau courant, lumiere directionnelle avec ombres douces, ciel en
+degrade suivant le theme, et de vrais volumes pour les 13 elements.
+
+**three.js est charge dynamiquement avec une echeance de 7 s**, pas par une balise
+`<script>` bloquante : un CDN lent, bloque ou hors service ne doit jamais laisser la
+page sans constructeur utilisable. Si le chargement echoue, `builder.js` demarre son
+moteur isometrique 2D sur le meme canvas et un message l'explique. Les deux moteurs
+partagent `ELEMENTS`, `THEMES`, le stockage et les icones de palette.
+
+> Le rendu WebGL lui-meme n'a pas pu etre verifie ici : la politique reseau de
+> l'environnement de developpement bloque cdnjs. La logique (construction des 13
+> geometries, 5 themes, historique, export, vue de dessus) a ete exercee contre un
+> stub de l'API three.js. **A regarder une premiere fois sur un vrai poste.**
+
+## Paiement
+
+`STRIPE_LINK` est en tete de `main.js` avec le placeholder
+`https://buy.stripe.com/REMPLACER`. Tout element portant `data-stripe` recoit ce lien
+au chargement, donc il n'y a qu'un seul endroit a modifier. Stripe doit rediriger vers
+`merci.html` apres paiement.
 
 ## Deploiement
 
