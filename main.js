@@ -79,14 +79,21 @@
     });
 
     document.documentElement.setAttribute('lang', code);
-    document.title = t('meta.title');
 
-    setMeta('name', 'description', t('meta.description'));
-    setMeta('property', 'og:title', t('meta.ogTitle'));
-    setMeta('property', 'og:description', t('meta.ogDescription'));
+    /* Each page names its own metadata keys via <html data-meta="…">. */
+    var mk = document.documentElement.getAttribute('data-meta') || 'meta';
+    var titleKey = mk + '.title';
+    var descKey = mk + '.description';
+    var ogTitleKey = has(mk + '.ogTitle') ? mk + '.ogTitle' : titleKey;
+    var ogDescKey = has(mk + '.ogDescription') ? mk + '.ogDescription' : descKey;
+
+    document.title = t(titleKey);
+    setMeta('name', 'description', t(descKey));
+    setMeta('property', 'og:title', t(ogTitleKey));
+    setMeta('property', 'og:description', t(ogDescKey));
     setMeta('property', 'og:locale', meta.locale);
-    setMeta('name', 'twitter:title', t('meta.ogTitle'));
-    setMeta('name', 'twitter:description', t('meta.ogDescription'));
+    setMeta('name', 'twitter:title', t(ogTitleKey));
+    setMeta('name', 'twitter:description', t(ogDescKey));
 
     var soundBtn = $('#soundToggle');
     if (soundBtn) soundBtn.setAttribute('aria-label', t(soundBtn.getAttribute('data-i18n') || 'a11y.soundOn'));
@@ -105,7 +112,15 @@
     }
 
     renderMarquees();
+    splitHeroTitle();
     if (modalState.open) renderModal(modalState.key);
+  }
+
+  function has(key) {
+    var dict = I18N.translations[currentLang] || {};
+    if (Object.prototype.hasOwnProperty.call(dict, key)) return true;
+    var fb = I18N.translations[I18N.fallback] || {};
+    return Object.prototype.hasOwnProperty.call(fb, key);
   }
 
   function setMeta(attr, name, value) {
@@ -209,6 +224,131 @@
   }
 
 
+
+
+  /* ==========================================================
+     Hero — the title arrives word by word, and the colour
+     clouds shift by different amounts so the backdrop reads
+     as depth rather than one flat plane.
+     ========================================================== */
+  var heroPlayed = false;
+
+  function splitHeroTitle() {
+    var el = $('.hero__title');
+    if (!el) return;
+    var text = (el.textContent || '').trim();
+    if (!text) return;
+
+    var words = text.split(/\s+/);
+    el.textContent = '';
+    words.forEach(function (w, i) {
+      var mask = document.createElement('span');
+      mask.className = 'word';
+      var inner = document.createElement('span');
+      inner.className = 'word__in';
+      inner.textContent = w;
+      inner.style.setProperty('--wd', (i * 85) + 'ms');
+      mask.appendChild(inner);
+      el.appendChild(mask);
+      if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+    });
+
+    /* A language switch re-splits the title; if it has already played,
+       show the new words straight away instead of replaying. */
+    if (heroPlayed || reduced()) el.classList.add('is-in');
+  }
+
+  function playHeroTitle() {
+    heroPlayed = true;
+    var el = $('.hero__title');
+    if (el) el.classList.add('is-in');
+  }
+
+  function initHeroDepth() {
+    var hero = $('#hero');
+    if (!hero || reduced()) return;
+
+    var layers = $$('[data-depth]', hero).map(function (el) {
+      return { el: el, depth: parseFloat(el.getAttribute('data-depth')) || .5 };
+    });
+    if (!layers.length) return;
+
+    var pointerX = 0, pointerY = 0;   /* -0.5 .. 0.5 */
+    var curX = 0, curY = 0;
+    var scrollY = 0;
+    var raf = null;
+
+    function render() {
+      raf = null;
+      curX += (pointerX - curX) * .06;
+      curY += (pointerY - curY) * .06;
+
+      layers.forEach(function (l) {
+        /* Nearer layers travel further: that difference is the depth cue. */
+        var px = curX * 90 * l.depth;
+        var py = curY * 70 * l.depth + scrollY * .18 * l.depth;
+        l.el.style.setProperty('--px', px.toFixed(1) + 'px');
+        l.el.style.setProperty('--py', py.toFixed(1) + 'px');
+      });
+
+      if (Math.abs(pointerX - curX) > .001 || Math.abs(pointerY - curY) > .001) {
+        raf = window.requestAnimationFrame(render);
+      }
+    }
+
+    function kick() { if (!raf) raf = window.requestAnimationFrame(render); }
+
+    if (fine()) {
+      window.addEventListener('pointermove', function (e) {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        pointerX = e.clientX / window.innerWidth - .5;
+        pointerY = e.clientY / window.innerHeight - .5;
+        kick();
+      }, { passive: true });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        ticking = false;
+        var top = hero.getBoundingClientRect().top;
+        if (top > 0) { scrollY = 0; return; }
+        scrollY = Math.min(-top, hero.offsetHeight);
+        kick();
+        render();
+      });
+    }, { passive: true });
+  }
+
+  function initHeroGlow() {
+    var glow = $('#heroGlow');
+    if (!glow || !fine() || reduced()) return;
+
+    var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
+    var cx = tx, cy = ty;
+    var running = false;
+
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      tx = e.clientX;
+      ty = e.clientY;
+      if (!glow.classList.contains('is-on')) glow.classList.add('is-on');
+      if (!running) { running = true; window.requestAnimationFrame(loop); }
+    }, { passive: true });
+
+    function loop() {
+      cx += (tx - cx) * .08;
+      cy += (ty - cy) * .08;
+      glow.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+      if (Math.abs(tx - cx) > .5 || Math.abs(ty - cy) > .5) {
+        window.requestAnimationFrame(loop);
+      } else {
+        running = false;
+      }
+    }
+  }
 
   /* ==========================================================
      Sound — every effect is synthesised with the Web Audio API,
@@ -425,9 +565,18 @@
       }, 320);
     }
 
-    function tick() {
+    /* Ease toward the real figure on a wall-clock curve rather than a
+       per-frame one: on a device running at 10fps a per-frame factor
+       would stretch the same catch-up over several seconds. */
+    var last = (window.performance && performance.now) ? performance.now() : Date.now();
+
+    function tick(now) {
+      var t = now || ((window.performance && performance.now) ? performance.now() : Date.now());
+      var dt = Math.min(.25, Math.max(0, (t - last) / 1000));
+      last = t;
+
       var real = (loaded / total) * 100;
-      shown += (real - shown) * .18;
+      shown += (real - shown) * (1 - Math.pow(.006, dt));
       if (real - shown < .5) shown = real;
       paint(shown);
       if (loaded >= total && shown >= 99.5) { finish(); return; }
@@ -713,32 +862,6 @@
     });
   }
 
-  function initBackgroundGlow() {
-    var glow = $('#bgGlow');
-    if (!glow || !fine() || reduced()) return;
-
-    var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
-    var cx = tx, cy = ty;
-    var running = false;
-
-    document.addEventListener('pointermove', function (e) {
-      tx = e.clientX;
-      ty = e.clientY;
-      if (!glow.classList.contains('is-on')) glow.classList.add('is-on');
-      if (!running) { running = true; window.requestAnimationFrame(loop); }
-    }, { passive: true });
-
-    function loop() {
-      cx += (tx - cx) * .07;
-      cy += (ty - cy) * .07;
-      glow.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
-      if (Math.abs(tx - cx) > .5 || Math.abs(ty - cy) > .5) {
-        window.requestAnimationFrame(loop);
-      } else {
-        running = false;
-      }
-    }
-  }
 
   /* ==========================================================
      5. Custom cursor
@@ -826,6 +949,13 @@
         { key: 'common.playCta', href: 'https://fortnite.gg/island/1445-1331-8129', variant: 'solid' },
         { key: 'common.orderCta', href: DISCORD, variant: 'outline' }
       ]
+    },
+    help: {
+      kicker: 'builder.help', title: 'builder.help.title', desc: 'builder.help.intro',
+      list: ['builder.help.k1', 'builder.help.k2', 'builder.help.k3', 'builder.help.k4',
+             'builder.help.k5', 'builder.help.k6', 'builder.help.k7', 'builder.help.k8',
+             'builder.help.k9'],
+      actions: []
     },
     p2: {
       kicker: 'portfolio.p2.tag', title: 'portfolio.p2.title', desc: 'portfolio.p2.long',
@@ -1074,7 +1204,8 @@
 
     initScrollChrome();
     initTilt();
-    initBackgroundGlow();
+    initHeroGlow();
+    initHeroDepth();
     initCursor();
     initRipples();
     initModal();
@@ -1084,7 +1215,10 @@
 
     /* Reveals wait for the loader so the hero actually animates in
        behind the sweep instead of having played out of sight. */
-    initLoader(function () { initReveals(); });
+    initLoader(function () {
+      initReveals();
+      playHeroTitle();
+    });
 
     /* Webfonts change the marquee's natural width, so size it again
        once they are in — otherwise the track is measured against the

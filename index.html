@@ -97,6 +97,7 @@
       <a class="nav__link" href="#process" data-i18n="nav.process">Process</a>
       <a class="nav__link" href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a class="nav__link" href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a class="nav__link" href="builder.html" data-i18n="nav.builder">Constructeur</a>
       <a class="nav__link" href="#contact" data-i18n="nav.contact">Contact</a>
       <a class="nav__link nav__link--cta" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
     </nav>
@@ -147,11 +148,15 @@
 
 <!-- ======================= HERO ======================= -->
 <section class="sec sec--violet hero" id="hero">
-  <div class="sec__fx" aria-hidden="true">
-    <span class="blob blob--1"></span>
-    <span class="blob blob--2"></span>
-    <svg class="morph morph--hero" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
-      <path fill="rgba(236,72,153,.42)">
+  <div class="hero__fx" aria-hidden="true">
+    <span class="cloud cloud--a" data-depth="0.22"></span>
+    <span class="cloud cloud--b" data-depth="0.42"></span>
+    <span class="cloud cloud--c" data-depth="0.62"></span>
+    <span class="cloud cloud--d" data-depth="0.85"></span>
+    <span class="cloud cloud--e" data-depth="1.1"></span>
+
+    <svg class="morph morph--hero" data-depth="0.35" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <path fill="rgba(224, 17, 122, .5)">
         <animate attributeName="d" dur="18s" repeatCount="indefinite"
           values="M300,120 C420,120 500,220 500,320 C500,440 400,500 290,500 C180,500 100,420 100,310 C100,200 180,120 300,120 Z;
                   M310,100 C450,130 520,240 490,350 C460,470 340,520 230,490 C120,460 80,340 110,230 C140,120 210,80 310,100 Z;
@@ -159,11 +164,23 @@
                   M300,120 C420,120 500,220 500,320 C500,440 400,500 290,500 C180,500 100,420 100,310 C100,200 180,120 300,120 Z"/>
       </path>
     </svg>
+    <svg class="morph morph--hero2" data-depth="0.7" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <path fill="rgba(34, 211, 238, .34)">
+        <animate attributeName="d" dur="23s" repeatCount="indefinite"
+          values="M300,140 C400,130 470,220 470,320 C470,430 380,490 280,480 C170,470 120,380 130,280 C140,190 200,150 300,140 Z;
+                  M280,120 C400,140 490,230 470,350 C450,460 340,510 240,480 C140,450 110,350 130,250 C150,160 200,110 280,120 Z;
+                  M310,150 C420,150 480,250 460,350 C440,450 350,500 250,480 C150,460 120,360 140,270 C160,190 220,150 310,150 Z;
+                  M300,140 C400,130 470,220 470,320 C470,430 380,490 280,480 C170,470 120,380 130,280 C140,190 200,150 300,140 Z"/>
+      </path>
+    </svg>
+
+    <span class="hero__glow" id="heroGlow"></span>
+    <span class="hero__grain"></span>
   </div>
 
   <div class="shell hero__inner">
     <p class="kicker" data-reveal="left" data-i18n="hero.badge">Studio UEFN · Fortnite Creative</p>
-    <h1 class="hero__title" data-reveal="left" data-reveal-delay="1" data-i18n="hero.title">Vos maps Fortnite, créées de A à Z</h1>
+    <h1 class="hero__title" data-i18n="hero.title">Vos maps Fortnite, créées de A à Z</h1>
     <p class="hero__subtitle" data-reveal="right" data-reveal-delay="2" data-i18n="hero.subtitle">
       Conception, level design, code Verse et publication — tout est développé dans l'Unreal Editor for Fortnite. Vous décrivez l'idée, je livre la map jouable.
     </p>
@@ -414,6 +431,29 @@
   </div>
 </section>
 
+<!-- ======================= BUILDER ======================= -->
+<section class="sec sec--night homebuilder" id="builder" aria-labelledby="builderTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,48 C250,100 560,12 880,50 C1120,78 1310,26 1440,54 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--15"></span><span class="blob blob--16"></span></div>
+
+  <div class="shell homebuilder__grid">
+    <div class="homebuilder__copy">
+      <p class="kicker" data-reveal="left" data-i18n="home.builder.kicker">Outil gratuit</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="builderTitle" data-i18n="home.builder.title">Dessine ta map avant même d'ouvrir un ticket</h2>
+      <p class="sectionLead" data-reveal="left" data-reveal-delay="2" data-i18n="home.builder.lead">Un constructeur isométrique directement dans le navigateur : pose tes blocs, exporte une image et joins-la à ta commande.</p>
+      <div class="homebuilder__actions" data-reveal="up" data-reveal-delay="3">
+        <a class="btn btn--solid btn--lg" href="builder.html" data-i18n="home.builder.cta">Dessine ta map</a>
+      </div>
+    </div>
+
+    <div class="homebuilder__stage" data-reveal="right" data-reveal-delay="2">
+      <canvas id="builderPreview" aria-hidden="true"></canvas>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= PROCESS ======================= -->
 <section class="sec sec--magenta" id="process" aria-labelledby="processTitle">
   <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
@@ -624,6 +664,7 @@
       <a href="#process" data-i18n="nav.process">Process</a>
       <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a href="builder.html" data-i18n="nav.builder">Constructeur</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
       <a href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">Discord</a>
     </nav>
@@ -663,5 +704,6 @@
 
 <script src="i18n.js"></script>
 <script src="main.js"></script>
+<script src="builder.js"></script>
 </body>
 </html>

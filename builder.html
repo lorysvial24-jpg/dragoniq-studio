@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" data-meta="builder.meta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#130B30">
+
+<title data-i18n="builder.meta.title">Constructeur de map — DragonIQ.Studio</title>
+<meta name="description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique directement dans le navigateur, exporte-la en PNG et joins-la à ton ticket Discord.">
+<link rel="canonical" href="https://dragoniqstudio.com/builder.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DragonIQ.Studio">
+<meta property="og:url" content="https://dragoniqstudio.com/builder.html">
+<meta property="og:title" data-i18n="builder.meta.title" data-i18n-attr="content" content="Constructeur de map — DragonIQ.Studio">
+<meta property="og:description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique, exporte-la en PNG et joins-la à ton ticket Discord.">
+<meta property="og:image" content="https://dragoniqstudio.com/assets/logo.png">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" data-i18n="builder.meta.title" data-i18n-attr="content" content="Constructeur de map — DragonIQ.Studio">
+<meta name="twitter:description" data-i18n="builder.meta.description" data-i18n-attr="content" content="Dessine ton idée de map Fortnite en isométrique, exporte-la en PNG et joins-la à ton ticket Discord.">
+<meta name="twitter:image" content="https://dragoniqstudio.com/assets/logo.png">
+
+<link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="builder.css">
+</head>
+
+<body class="page-builder">
+<a class="skip-link" href="#builderMain" data-i18n="a11y.skip">Aller au contenu principal</a>
+
+<div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="progressBar"></span></div>
+
+<div class="cursor" id="cursor" aria-hidden="true">
+  <span class="cursor__dot"></span>
+  <span class="cursor__ring"></span>
+</div>
+
+<!-- ======================= HEADER ======================= -->
+<header class="header" id="header" data-tone="dark">
+  <div class="header__inner shell">
+    <a class="logo" href="index.html" aria-label="DragonIQ.Studio">
+      <span class="logo__disc"><img class="logo__img" src="assets/logo.png" alt="" width="44" height="44" decoding="async"></span>
+      <span class="logo__text">DragonIQ<span class="logo__dot">.</span>Studio</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      <a class="nav__link" href="index.html#services" data-i18n="nav.services">Services</a>
+      <a class="nav__link" href="index.html#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+      <a class="nav__link" href="index.html#process" data-i18n="nav.process">Process</a>
+      <a class="nav__link" href="index.html#pricing" data-i18n="nav.pricing">Tarifs</a>
+      <a class="nav__link" href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+      <a class="nav__link is-active" href="builder.html" aria-current="page" data-i18n="nav.builder">Constructeur</a>
+      <a class="nav__link" href="index.html#contact" data-i18n="nav.contact">Contact</a>
+      <a class="nav__link nav__link--cta" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
+    </nav>
+
+    <div class="header__actions">
+      <button class="sound" id="soundToggle" type="button" aria-pressed="false"
+              data-i18n="a11y.soundOn" data-i18n-attr="aria-label" aria-label="Activer les sons">
+        <svg class="sound__icon sound__icon--off" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">
+          <path d="M4 9.5h3.2L12 5.5v13L7.2 14.5H4z" fill="currentColor"/>
+          <path d="M16.5 9.5 21 14M21 9.5 16.5 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+        <svg class="sound__icon sound__icon--on" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">
+          <path d="M4 9.5h3.2L12 5.5v13L7.2 14.5H4z" fill="currentColor"/>
+          <path d="M15.6 9a4.2 4.2 0 0 1 0 6M18.3 6.6a7.8 7.8 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
+        <span class="sound__dot" aria-hidden="true"></span>
+      </button>
+
+      <div class="lang" id="lang">
+        <button class="lang__button" id="langButton" type="button"
+                aria-haspopup="listbox" aria-expanded="false" aria-controls="langList"
+                data-i18n="a11y.langButton" data-i18n-attr="aria-label" aria-label="Changer de langue">
+          <svg class="lang__globe" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3 12h18M12 3c2.6 2.6 3.8 6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-6-3.8-9S9.4 5.6 12 3z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          <span class="lang__current" id="langCurrent">FR</span>
+          <svg class="lang__chev" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+            <path d="M6 9.5 12 15l6-5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <ul class="lang__list" id="langList" role="listbox" tabindex="-1"
+            data-i18n="a11y.langList" data-i18n-attr="aria-label" aria-label="Langues disponibles"></ul>
+      </div>
+
+      <a class="btn btn--solid btn--sm" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
+
+      <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav"
+              data-i18n="a11y.menu" data-i18n-attr="aria-label" aria-label="Ouvrir le menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="builderMain" class="sec sec--night bstage">
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--15"></span><span class="blob blob--16"></span></div>
+
+  <div class="shell bstage__head">
+    <p class="kicker" data-i18n="home.builder.kicker">Outil gratuit</p>
+    <h1 class="bstage__title" data-i18n="builder.pageTitle">Constructeur de map</h1>
+    <p class="bstage__lead" data-i18n="builder.pageLead">Dessine l'idée de ta map en quelques minutes, exporte-la en image et envoie-la avec ton ticket.</p>
+  </div>
+
+  <div class="shell">
+    <div class="bnotice" id="builderNotice" hidden>
+      <p data-i18n="builder.smallScreen">L'outil fonctionne au doigt, mais tu seras bien plus à l'aise sur ordinateur.</p>
+      <button class="bnotice__close" type="button" id="builderNoticeClose"
+              data-i18n="a11y.closeModal" data-i18n-attr="aria-label" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="builder">
+      <!-- toolbar -->
+      <div class="btoolbar">
+        <label class="bfield">
+          <span class="bfield__label" data-i18n="builder.projectLabel">Nom du projet</span>
+          <input class="bfield__input" id="builderName" type="text" autocomplete="off" maxlength="60"
+                 data-i18n="builder.projectPlaceholder" data-i18n-attr="placeholder" placeholder="Ma map">
+        </label>
+
+        <label class="bfield">
+          <span class="bfield__label" data-i18n="builder.themeLabel">Thème</span>
+          <select class="bfield__select" id="builderTheme">
+            <option value="fortnite" data-i18n="builder.theme.fortnite">Fortnite classique</option>
+            <option value="desert" data-i18n="builder.theme.desert">Désert</option>
+            <option value="snow" data-i18n="builder.theme.snow">Neige</option>
+            <option value="neon" data-i18n="builder.theme.neon">Néon</option>
+            <option value="horror" data-i18n="builder.theme.horror">Horreur</option>
+          </select>
+        </label>
+
+        <div class="bstat">
+          <span class="bstat__label" data-i18n="builder.blocks">Blocs</span>
+          <span class="bstat__value" id="builderCount">0</span>
+        </div>
+
+        <div class="bstat bstat--level">
+          <span class="bstat__label" data-i18n="builder.level">Niveau</span>
+          <div class="blevel">
+            <button class="blevel__btn" type="button" id="builderLevelDown" aria-label="-">−</button>
+            <span class="bstat__value" id="builderLevel">1</span>
+            <button class="blevel__btn" type="button" id="builderLevelUp" aria-label="+">+</button>
+          </div>
+        </div>
+
+        <button class="btool" type="button" data-modal="help" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.9"/>
+            <path d="M9.6 9.4a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.7-.9 1.3v.4M12 16.6v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+          <span data-i18n="builder.help">Aide</span>
+        </button>
+      </div>
+
+      <!-- palette -->
+      <aside class="bpalette" id="builderPaletteWrap">
+        <button class="bpalette__toggle" type="button" id="builderPaletteToggle" aria-expanded="false" aria-controls="builderPalette">
+          <span data-i18n="builder.palette">Palette</span>
+        </button>
+        <div class="bpalette__list" id="builderPalette"></div>
+      </aside>
+
+      <!-- stage -->
+      <div class="bcanvas">
+        <canvas id="builderCanvas" role="img"
+                data-i18n="builder.pageTitle" data-i18n-attr="aria-label" aria-label="Constructeur de map"></canvas>
+
+        <div class="bactions">
+          <button class="btool" type="button" id="builderEraser" aria-pressed="false">
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+              <path d="m14 4 6 6-8 8H6l-2-2z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+              <path d="M9 18 20 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            </svg>
+            <span data-i18n="builder.eraser">Gomme</span>
+          </button>
+          <button class="btool" type="button" id="builderRotate">
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+              <path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="builder.rotate">Pivoter</span>
+          </button>
+          <button class="btool" type="button" id="builderUndo" disabled>
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+              <path d="M4 10h9a5 5 0 0 1 0 10H8M4 10l4-4M4 10l4 4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="builder.undo">Annuler</span>
+          </button>
+          <button class="btool" type="button" id="builderRedo" disabled>
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+              <path d="M20 10h-9a5 5 0 0 0 0 10h5M20 10l-4-4M20 10l-4 4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="builder.redo">Rétablir</span>
+          </button>
+          <button class="btool btool--danger" type="button" id="builderClear">
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+              <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="builder.clear">Tout effacer</span>
+          </button>
+          <span class="bsaved" data-i18n="builder.autosaved">Sauvegarde automatique</span>
+        </div>
+
+        <p class="btoast" id="builderToast" role="status" aria-live="polite"></p>
+      </div>
+
+      <!-- export -->
+      <div class="bexport">
+        <button class="btn btn--solid btn--lg" type="button" id="builderExport" data-i18n="builder.export">Exporter en PNG</button>
+        <div class="bexport__side">
+          <p class="bexport__hint" data-i18n="builder.discordHint">Exporte ton PNG, puis joins-le à ton ticket sur le Discord.</p>
+          <a class="btn btn--outline" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="builder.discord">Envoyer sur Discord</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ======================= FOOTER ======================= -->
+<footer class="footer">
+  <div class="shell footer__inner">
+    <div class="footer__brand">
+      <a class="logo logo--sm" href="index.html" aria-label="DragonIQ.Studio">
+        <span class="logo__disc"><img class="logo__img" src="assets/logo.png" alt="" width="52" height="52" loading="lazy" decoding="async"></span>
+        <span class="logo__text">DragonIQ<span class="logo__dot">.</span>Studio</span>
+      </a>
+      <p class="footer__tagline" data-i18n="footer.tagline">Maps Fortnite UEFN, conçues et développées sur mesure.</p>
+    </div>
+
+    <nav class="footer__nav" aria-label="Navigation de pied de page">
+      <a href="index.html#services" data-i18n="nav.services">Services</a>
+      <a href="index.html#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+      <a href="index.html#process" data-i18n="nav.process">Process</a>
+      <a href="index.html#pricing" data-i18n="nav.pricing">Tarifs</a>
+      <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+      <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+      <a href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">Discord</a>
+    </nav>
+
+    <div class="footer__lang">
+      <label class="footer__langLabel" for="footerLang" data-i18n="footer.language">Langue</label>
+      <select class="footer__select" id="footerLang"></select>
+    </div>
+  </div>
+
+  <div class="shell footer__legal">
+    <p>© <span id="year">2026</span> DragonIQ.Studio — <span data-i18n="footer.rights">Tous droits réservés.</span></p>
+    <p data-i18n="footer.disclaimer">Non affilié à Epic Games. Fortnite et UEFN sont des marques d'Epic Games, Inc.</p>
+  </div>
+</footer>
+
+<!-- ======================= MODAL ======================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" id="modalPanel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <button class="modal__close" type="button" data-modal-close
+            data-i18n="a11y.closeModal" data-i18n-attr="aria-label" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+        <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="modal__media" id="modalMedia" aria-hidden="true"></div>
+    <div class="modal__content">
+      <p class="kicker" id="modalKicker"></p>
+      <h2 class="modal__title" id="modalTitle"></h2>
+      <p class="modal__desc" id="modalDesc"></p>
+      <ul class="modal__list" id="modalList"></ul>
+      <div class="modal__actions" id="modalActions"></div>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="main.js"></script>
+<script src="builder.js"></script>
+</body>
+</html>
