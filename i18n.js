@@ -383,6 +383,9 @@
       'brief.close': 'Fermer le générateur de brief',
       'est.live': 'Estimation : {low} à {high} {cur}.',
       'theme.sec.estimate': 'Estimateur',
+      'hero.rotatorLead': 'En ce moment je construis',
+      'hero.scrollHint': 'Scroller',
+      'cursor.view': 'Voir',
       'theme.sec.proof': 'Témoignages'
     
     },
@@ -753,6 +756,9 @@
       'brief.close': 'Close the brief generator',
       'est.live': 'Estimate: {low} to {high} {cur}.',
       'theme.sec.estimate': 'Estimator',
+      'hero.rotatorLead': 'Right now I am building',
+      'hero.scrollHint': 'Scroll',
+      'cursor.view': 'View',
       'theme.sec.proof': 'Testimonials'
     
     },
@@ -1123,6 +1129,9 @@
       'brief.close': 'Fechar o gerador de briefing',
       'est.live': 'Estimativa: de {low} a {high} {cur}.',
       'theme.sec.estimate': 'Estimador',
+      'hero.rotatorLead': 'Neste momento estou a criar',
+      'hero.scrollHint': 'Rolar',
+      'cursor.view': 'Ver',
       'theme.sec.proof': 'Testemunhos'
     
     },
@@ -1493,6 +1502,9 @@
       'brief.close': 'Cerrar el generador de briefing',
       'est.live': 'Estimación: de {low} a {high} {cur}.',
       'theme.sec.estimate': 'Estimador',
+      'hero.rotatorLead': 'Ahora mismo estoy creando',
+      'hero.scrollHint': 'Desplázate',
+      'cursor.view': 'Ver',
       'theme.sec.proof': 'Testimonios'
     
     },
@@ -1863,6 +1875,9 @@
       'brief.close': 'Chiudi il generatore di brief',
       'est.live': 'Stima: da {low} a {high} {cur}.',
       'theme.sec.estimate': 'Stimatore',
+      'hero.rotatorLead': 'In questo momento sto costruendo',
+      'hero.scrollHint': 'Scorri',
+      'cursor.view': 'Vedi',
       'theme.sec.proof': 'Testimonianze'
     
     },
@@ -2233,6 +2248,9 @@
       'brief.close': 'Brief-Generator schließen',
       'est.live': 'Schätzung: {low} bis {high} {cur}.',
       'theme.sec.estimate': 'Rechner',
+      'hero.rotatorLead': 'Gerade baue ich',
+      'hero.scrollHint': 'Scrollen',
+      'cursor.view': 'Ansehen',
       'theme.sec.proof': 'Stimmen'
     
     }

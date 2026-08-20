@@ -21,7 +21,9 @@ merci.html     Page de confirmation apres paiement Stripe
 builder.css    Styles propres au constructeur (le reste vient de styles.css)
 builder.js     Moteur isometrique 2D : apercu d'accueil + repli du constructeur
 builder3d.js   Constructeur 3D three.js (scene, orbite maison, export)
-hero3d.js      Diorama low-poly du hero (ile flottante three.js, repli automatique)
+hero3d.js      Fond shader GLSL + diorama low-poly du hero (three.js, repli automatique)
+fx.js          Couche d'animation : typo cinematique, magnetisme, speculaire,
+               onde de choc, particules, parallaxe, curseur, garde-fou 60 fps
 tools.js       Estimateur de prix, generateur de brief, carrousel de temoignages
 theme.js       Panneau de personnalisation du theme cote visiteur
 styles.css     Tokens & palettes -> reset -> chrome -> primitives -> sections -> marquee -> modale
@@ -341,10 +343,15 @@ en suivant la souris.
   repond pas en 7 s, `#heroScene` passe en `data-mode="fallback"` et le fond de degrade
   anime reste seul. Le titre est lisible dans les deux cas.
 
-> Meme reserve que pour le constructeur 3D : cdnjs est bloque dans l'environnement de
-> developpement, donc le rendu WebGL n'a pas pu etre vu. La scene a ete exercee contre
-> un stub de l'API three.js (assemblage, comptage des triangles, pause/reprise,
-> retheme). **A regarder une premiere fois sur un vrai poste.**
+* **Facettes** : les materiaux sont en `MeshPhongMaterial` avec `flatShading`.
+  `MeshLambertMaterial` eclaire par sommet et **ignore `flatShading`** — avec lui
+  l'ile n'etait pas facettee du tout, ce qui vide le style low-poly de son sens.
+
+> Le rendu WebGL a ete verifie cette fois, contre le vrai three.js r128 servi
+> localement : le shader s'anime, la souris deforme le champ, le morphing suit
+> le scroll, l'echelle de qualite descend et remonte. Reste que cet
+> environnement rasterise en logiciel — les couleurs et le mouvement sont bons,
+> mais **la fluidite reelle demande un vrai GPU pour etre jugee.**
 
 ## Estimateur de prix
 
@@ -393,6 +400,112 @@ cours de questionnaire conserve les reponses et retraduit tout.
 * **Badge de disponibilite** : la constante `AVAILABILITY` en tete de `main.js` vaut
   `'open'` (vert, point qui pulse) ou `'full'` (orange). Le badge est masque sous 860 px
   pour laisser la place au burger.
+
+## La couche d'animation (`fx.js`)
+
+Tout ce qui bouge cote DOM vit dans `fx.js`, sous deux regles :
+
+1. **Une seule boucle rAF.** Tous les effets sont des jobs sur le meme
+   « chef d'orchestre », qui lit la position de scroll une fois par frame et la
+   distribue. Aucun effet n'ouvre sa propre boucle.
+2. **Aucun reflow dans une frame.** Les mesures se font dans `Metrics`, jamais
+   pendant le scroll : chaque effet stocke ses positions en *coordonnees
+   document*, et la frame convertit en coordonnees ecran par une soustraction.
+   Les frames n'ecrivent que `transform`, `opacity` et `filter`.
+
+Ce qu'il contient :
+
+| Effet | Ou | Notes |
+| ----- | -- | ----- |
+| Titre lettre par lettre | hero | chaque lettre arrive d'un `translateZ` different avec un flou qui se resout |
+| Masques de ligne | titres de section | les lignes sont mesurees puis reconstruites, remesurees au resize et au changement de langue |
+| Mot sur cylindre 3D | hero | `1v1 / Tycoon / RP / Box Fight / Zone Wars`, faces reparties sur un cylindre |
+| Lettres magnetiques | gros titres | champ de repulsion, mesure a l'entree du pointeur |
+| Boutons magnetiques | partout | ressort amorti, deplacement **plafonne** (sans plafond deux boutons voisins se rejoignent) |
+| Cartes speculaires | portfolio, services, paiement | rotation 3D + reflet qui se deplace deux fois plus vite que le pointeur |
+| Onde de choc | au clic | anneau qui traverse la section, couleur d'accent de la section |
+| Particules | toute la page | canvas 2D, s'ecartent du curseur, se densifient pres des elements interactifs |
+| Parallaxe | miniatures du portfolio | 4 couches a des profondeurs differentes |
+| Marquee | bandeaux | pilote en JS : la vitesse suit la velocite du scroll, avec un leger cisaillement |
+| Curseur | desktop | cercle / point / barre de texte / fleche / pastille « Voir » |
+| Plans de scroll | chaque section | decor, puis titre, puis contenu, puis details (`data-plane`) |
+
+### Garde-fou 60 fps
+
+La decoration s'appuie sur de tres grands `filter: blur()`. Un GPU de bureau les
+composite gratuitement, un GPU mobile faible non. `fx.js` mesure les vraies
+durees de frame et redescend en deux crans plutot que de deviner d'apres
+l'user-agent :
+
+* `data-perf="lite"` — rayon de flou reduit, moitie moins de particules, pas de
+  `backdrop-filter` ;
+* `data-perf="min"` — plus de couches decoratives du tout, plus de particules.
+
+Il ne remonte jamais : un appareil qui a peine une fois peinera encore, et
+osciller entre deux rendus est pire que de rester au plus bas. Les onglets en
+arriere-plan (bridés a ~1 fps) et les a-coups isoles sont ignores.
+
+> Mesure : sur le rasteriseur logiciel de l'environnement de test, la page
+> tourne a ~3 fps avec toute la decoration et **59,7 fps une fois le garde-fou
+> declenche**. Sans les flous decoratifs, 55,6 fps — autrement dit tout le JS,
+> le canvas et le WebGL tiennent largement dans un budget 60 fps, et le cout
+> est entierement dans le flou compose.
+
+## Le shader du hero
+
+Le fond du hero n'est plus un degrade CSS mais un quad plein ecran en GLSL,
+rendu dans le **meme contexte WebGL** que le diorama (scene ortho dessinee
+avant l'ile) : un seul canvas, une seule boucle, aucun contexte supplementaire.
+
+* **Bruit** : simplex 2D, `fbm` a 4 octaves, deux passes de deformation de
+  domaine — une nebuleuse liquide qui se recompose en continu.
+* **Souris** : le champ est repousse localement avec une gaussienne, et le
+  pointeur a de l'inertie (le champ continue un instant apres l'arret). Le
+  deplacement est **lineaire en `md`**, pas `normalize(md)` : une direction
+  normalisee tourne sur elle-meme au point exact du curseur et y laisse une
+  etoile figee.
+* **Scroll** : `uScroll` fait deriver le motif verticalement.
+* **Couleurs** : `uA / uB / uC` sont derives de `--sec-bg`, `--sec-accent` et
+  `--sec-ink-soft` lus sur `#hero`, donc le theme du visiteur repeint le shader.
+* **Lisibilite** : vignette + lavage du cote lecture, et la colonne de texte
+  s'arrete avant la scene au-dessus de 1000 px. Mesure sur pixels reels :
+  **0 % de la surface du titre, du sous-titre et des chiffres sous le seuil AA**,
+  p99.9 a 15:1.
+* **Qualite** : echelle a 4 crans (`QUALITY` en tete de `hero3d.js`). Le
+  watchdog descend d'un cran quand les frames s'allongent ; le dernier cran
+  eteint le shader et rend la main au degrade CSS.
+
+### Le morphing scroll
+
+Pendant que le hero defile, `#heroScene` est **epingle au viewport**
+(`.is-pinned`) : sans cela l'ile sortirait de l'ecran bien avant la fin de la
+transformation. L'ile bascule alors en vue de dessus, s'aplatit, revient vers le
+centre du cadre, et la premiere map du portfolio monte a sa place avec son cadre
+cyan. Le tout est pilote par la position de scroll, pas par un timer.
+
+## Transitions de page
+
+`@view-transition { navigation: auto; }` dans `styles.css` : sur une navigation
+same-origin, le navigateur garde un instantane des deux pages et joue le pli
+entre les deux. `::view-transition-old(root)` se replie vers la gauche,
+`::view-transition-new(root)` se deplie depuis la droite.
+
+`document.startViewTransition` **ne convient pas ici** : il n'anime qu'une mise
+a jour du meme document, donc il replierait la page pour la deplier a
+l'identique avant de naviguer. La detection se fait sur `onpagereveal`, qui
+n'existe que la ou les transitions inter-documents existent. Ailleurs, `main.js`
+intercepte le clic et joue le meme pli en CSS sur la page vivante, avec le voile
+`#pageFade` pour couvrir la bascule.
+
+## Le theme sonore
+
+Toutes les frequences sont des degres d'une **meme gamme** (pentatonique de do
+majeur, sur deux octaves) : rien ne peut tomber sur une note qui jure avec ce
+qui resonne encore. Les survols montent la gamme et redescendent, donc balayer
+une grille de cartes joue une phrase au lieu de repeter le meme bip. `DIQ.tone(nom)`
+expose les notes nommees (`hover`, `tap`, `impact`, `lift`, `done`) au reste du
+code. Sur mobile, une vibration de 7 ms accompagne le clic — uniquement si le
+visiteur a active le son.
 
 ## Deploiement
 

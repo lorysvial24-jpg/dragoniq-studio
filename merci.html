@@ -47,7 +47,9 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 <a class="skip-link" href="#thanksMain" data-i18n="a11y.skip">Aller au contenu principal</a>
 
 <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="progressBar"></span></div>
-<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+<canvas class="particles" id="particles" aria-hidden="true"></canvas>
+
+<div class="cursor" id="cursor" data-state="default" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
 
 <!-- ======================= HEADER ======================= -->
 <header class="header" id="header" data-tone="dark">
@@ -221,5 +223,6 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 <script src="i18n.js"></script>
 <script src="main.js"></script>
 <script src="theme.js"></script>
+<script src="fx.js"></script>
 </body>
 </html>

@@ -90,7 +90,9 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
 <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar" id="progressBar"></span></div>
 
-<div class="cursor" id="cursor" aria-hidden="true">
+<canvas class="particles" id="particles" aria-hidden="true"></canvas>
+
+<div class="cursor" id="cursor" data-state="default" aria-hidden="true">
   <span class="cursor__dot"></span>
   <span class="cursor__ring"></span>
 </div>
@@ -222,6 +224,11 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
       Conception, level design, code Verse et publication — tout est développé dans l'Unreal Editor for Fortnite. Vous décrivez l'idée, je livre la map jouable.
     </p>
 
+    <p class="hero__rotate" data-reveal="up" data-reveal-delay="2">
+      <span data-i18n="hero.rotatorLead">En ce moment je construis</span>
+      <span class="rotator" id="rotator" data-words="1v1|Tycoon|RP|Box Fight|Zone Wars"></span>
+    </p>
+
     <div class="hero__actions" data-reveal="up" data-reveal-delay="3">
       <a class="btn btn--solid btn--lg" href="#portfolio" data-i18n="hero.ctaPrimary">Voir mes maps</a>
       <a class="btn btn--outline btn--lg" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="hero.ctaSecondary">Commander sur Discord</a>
@@ -241,6 +248,11 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
         <dd class="stat__label" data-i18n="hero.stat3">Développé sous UEFN</dd>
       </div>
     </dl>
+  </div>
+
+  <div class="scrollhint" id="scrollHint" aria-hidden="true">
+    <span class="scrollhint__label" data-i18n="hero.scrollHint">Scroller</span>
+    <span class="scrollhint__rail"><span class="scrollhint__bead"></span></span>
   </div>
 </section>
 
@@ -1103,5 +1115,6 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 <script src="theme.js"></script>
 <script src="builder.js"></script>
 <script src="hero3d.js"></script>
+<script src="fx.js"></script>
 </body>
 </html>

@@ -490,28 +490,66 @@
       src.stop(t0 + dur + .03);
     }
 
+    /* ---- one key for the whole page -------------------------
+       Every sound is a degree of the same C major pentatonic, two
+       octaves of it. Nothing can land on a note that clashes with
+       whatever else happens to be ringing, so a fast run of hovers
+       and clicks reads as an arpeggio rather than as beeping. */
+    var ROOT = 261.63;                                  /* C4 */
+    var SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24];  /* semitones */
+    function note(degree) {
+      var i = Math.max(0, Math.min(SCALE.length - 1, degree | 0));
+      return ROOT * Math.pow(2, SCALE[i] / 12);
+    }
+
+    /* Hovers walk up the scale and settle back down, so sweeping a
+       grid of cards plays a phrase instead of the same pip. */
+    var hoverStep = 0;
+    var hoverRest = 0;
+
+    var TONES = {
+      hover:  { deg: 5, dur: .075, vol: .15, type: 'sine' },
+      tap:    { deg: 3, dur: .1,   vol: .24, type: 'triangle' },
+      impact: { deg: 0, dur: .16,  vol: .16, type: 'sine' },
+      lift:   { deg: 7, dur: .2,   vol: .13, type: 'sine' },
+      done:   { deg: 9, dur: .26,  vol: .15, type: 'sine' }
+    };
+
     var api = {
+      /* Named notes for anything outside this file (fx.js uses them). */
+      tone: function (name) {
+        if (!live()) return;
+        var spec = TONES[name] || TONES.tap;
+        blip({ freq: note(spec.deg), dur: spec.dur, vol: spec.vol, type: spec.type });
+      },
       pop: function () {
         if (!live()) return;
         var now = Date.now();
         if (now - lastPop < 70) return;      /* hovering a grid must not machine-gun */
+        if (now - lastPop > 900) hoverStep = 0;
         lastPop = now;
-        blip({ freq: 620, to: 880, dur: .07, vol: .18, type: 'sine' });
+        window.clearTimeout(hoverRest);
+        hoverRest = window.setTimeout(function () { hoverStep = 0; }, 1100);
+        var deg = 4 + (hoverStep % 4);
+        hoverStep++;
+        blip({ freq: note(deg), to: note(deg + 2), dur: .075, vol: .15, type: 'sine' });
       },
       click: function () {
         if (!live()) return;
-        blip({ freq: 340, to: 190, dur: .085, vol: .3, type: 'triangle' });
-        blip({ freq: 900, dur: .05, vol: .12, type: 'sine', delay: .01 });
+        /* Root plus its fifth: a small, closed sound that never sours
+           whatever hover note is still decaying. */
+        blip({ freq: note(3), to: note(0), dur: .09, vol: .26, type: 'triangle' });
+        blip({ freq: note(8), dur: .06, vol: .1, type: 'sine', delay: .012 });
       },
       whoosh: function (up) {
         if (!live()) return;
-        if (up) breath(.26, 380, 2200, .16);
-        else breath(.22, 2000, 340, .14);
+        if (up) breath(.26, note(2), note(10) * 2, .15);
+        else breath(.22, note(10) * 2, note(1), .13);
       },
       chord: function () {
         if (!live()) return;
-        [523.25, 659.25, 783.99].forEach(function (f, i) {
-          blip({ freq: f, dur: .5, vol: .085, type: 'sine', delay: i * .055 });
+        [0, 2, 4, 7].forEach(function (deg, i) {
+          blip({ freq: note(deg + 5), dur: .5, vol: .07, type: 'sine', delay: i * .05 });
         });
       },
       isOn: function () { return enabled; },
@@ -560,8 +598,18 @@
       if (e.target.closest && e.target.closest(HOVER)) Sound.pop();
     });
     document.addEventListener('pointerdown', function (e) {
-      if (e.target.closest && e.target.closest(HOVER + ', .sound, .lang__button, .burger')) Sound.click();
+      if (e.target.closest && e.target.closest(HOVER + ', .sound, .lang__button, .burger')) {
+        Sound.click();
+        buzz();
+      }
     });
+  }
+
+  /* A single very short tick on touch, and only when the visitor has
+     already opted into feedback by turning the sound on. */
+  function buzz() {
+    if (reduced() || fine() || !Sound.isOn()) return;
+    if (navigator.vibrate) { try { navigator.vibrate(7); } catch (e) { /* denied */ } }
   }
 
   /* ==========================================================
@@ -870,15 +918,25 @@
     var target = parseInt(el.getAttribute('data-count'), 10) || 0;
     if (reduced()) { el.textContent = String(target); return; }
 
-    var duration = 1500;
+    var duration = 1650;
     var start = null;
+
+    /* Elastic-out: overshoots the target and springs back onto it,
+       so the figure lands rather than glides to a stop. */
+    function elastic(p) {
+      if (p <= 0) return 0;
+      if (p >= 1) return 1;
+      return Math.pow(2, -10.5 * p) * Math.sin((p * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+    }
 
     function frame(ts) {
       if (start === null) start = ts;
       var p = Math.min(1, (ts - start) / duration);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = String(Math.round(target * eased));
+      var v = Math.round(target * elastic(p));
+      /* The overshoot must stay a number the visitor can read. */
+      el.textContent = String(Math.max(0, v));
       if (p < 1) window.requestAnimationFrame(frame);
+      else el.textContent = String(target);
     }
     el.textContent = '0';
     window.requestAnimationFrame(frame);
@@ -888,6 +946,9 @@
      4. Tilt 3D + pointer glow
      ========================================================== */
   function initTilt() {
+    /* fx.js does tilt and specular in one pass; two handlers writing
+       --rx on the same card would fight. */
+    if (global.DIQ_FX) return;
     if (!fine() || reduced()) return;
     var MAX = 5.5;  /* x2 below -> 11deg of tilt from edge to edge */
 
@@ -1285,9 +1346,40 @@
     });
   }
 
+  /* The page folds away like a card being turned, and the next one
+     unfolds behind it. Where the View Transitions API exists the
+     browser does the cross-fade of the two snapshots for us; where it
+     does not, the same fold is played on a veil before navigating. */
   function initPageTransition() {
     var fade = $('#pageFade');
     if (!fade) return;
+
+    /* Cross-document View Transitions are what this effect actually
+       needs: the browser keeps a snapshot of the page you are leaving
+       and of the one you arrive on, and animates between them across
+       the navigation. The CSS @view-transition rule opts in; nothing
+       here has to intercept the click at all.
+
+       document.startViewTransition only does same-document updates —
+       using it here would fold the page away and unfold the very same
+       page, then navigate. pagereveal exists exactly when the
+       cross-document version does, so that is the feature to detect. */
+    var hasVT = 'onpagereveal' in window;
+    document.documentElement.classList.toggle('has-vt', hasVT);
+
+    /* An entry fold on arrival, for the browsers doing it by hand. */
+    if (!reduced() && !hasVT) {
+      var came = false;
+      try { came = sessionStorage.getItem('diq-turn') === '1'; } catch (e) { /* private mode */ }
+      if (came) {
+        document.documentElement.classList.add('is-unfolding');
+        window.setTimeout(function () {
+          document.documentElement.classList.remove('is-unfolding');
+        }, 760);
+      }
+      try { sessionStorage.removeItem('diq-turn'); } catch (e) { /* ignore */ }
+    }
+
     $$('a[href$=".html"], a[href="index.html"]').forEach(function (link) {
       if (link.target === '_blank' || link.hasAttribute('download')) return;
       link.addEventListener('click', function (e) {
@@ -1295,13 +1387,24 @@
         var href = link.getAttribute('href');
         if (!href || href.charAt(0) === '#') return;
         if (reduced()) return;                     /* let the browser navigate plainly */
+
+        /* The browser is already animating this one. */
+        if (hasVT) { Sound.whoosh(true); return; }
+
         e.preventDefault();
+        Sound.whoosh(true);
+        try { sessionStorage.setItem('diq-turn', '1'); } catch (err) { /* ignore */ }
+        document.documentElement.classList.add('is-folding');
         fade.classList.add('is-on');
-        window.setTimeout(function () { window.location.href = href; }, 300);
+        window.setTimeout(function () { window.location.href = href; }, 460);
       });
     });
-    /* Coming back via the bfcache must not leave the veil up. */
-    window.addEventListener('pageshow', function () { fade.classList.remove('is-on'); });
+
+    /* Coming back via the bfcache must not leave the veil or the fold up. */
+    window.addEventListener('pageshow', function () {
+      fade.classList.remove('is-on');
+      document.documentElement.classList.remove('is-folding');
+    });
   }
 
   function initKonami() {
@@ -1511,6 +1614,8 @@
   global.DIQ.reduced = reduced;
   global.DIQ.countUp = countUp;
   global.DIQ.whoosh = function (up) { Sound.whoosh(!!up); };
+  global.DIQ.tone = function (name) { Sound.tone(name); };
+  global.DIQ.buzz = buzz;
   global.DIQ.copy = function (text, done) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });

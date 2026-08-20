@@ -1550,6 +1550,12 @@ body.is-loading { overflow: hidden; }
   .versus__good { font-size: clamp(1.3rem, 6.4vw, 1.7rem); }
 }
 
+/* Below this the wordmark and the four controls cannot share a row
+   without colliding; the round logo carries the brand on its own. */
+@media (max-width: 430px) {
+  .logo__text { display: none; }
+}
+
 /* ============================================================
    14. Hero atmosphere — layered colour clouds that mix as they
    drift, a pointer glow, animated grain, and a title that
@@ -2360,13 +2366,53 @@ body.is-loading { overflow: hidden; }
 
 /* On a live scene the title gets a readability floor: a soft dark wash
    that follows the section colour instead of a flat black box. */
+/* Readability floor under the copy.
+
+   A radial hint is not enough: the headline runs wide enough to reach
+   the diorama, and white type over a lit grass plateau drops under AA.
+   This is a column, not a box — solid where the words are, gone by the
+   time it reaches the island — so the depth still reads. */
 .heroScene[data-mode="live"] ~ .hero__inner::before {
   content: "";
   position: absolute;
-  inset: -8% -6% -10% -8%;
+  inset: -8% -6% -10% -12%;
   z-index: -1;
-  background: radial-gradient(70% 68% at 34% 46%, color-mix(in srgb, var(--sec-bg) 80%, transparent), transparent 76%);
+  background:
+    linear-gradient(100deg,
+      color-mix(in srgb, var(--sec-bg) 92%, transparent) 0%,
+      color-mix(in srgb, var(--sec-bg) 88%, transparent) 46%,
+      color-mix(in srgb, var(--sec-bg) 40%, transparent) 66%,
+      transparent 82%);
   pointer-events: none;
+}
+/* With the diorama live, the copy column stops before the scene starts.
+   Widening the wash instead would only trade one problem for another:
+   the island would sit behind a dark panel and lose the depth that is
+   the whole point of it. On the fallback the title keeps its full
+   measure, because there is nothing on the right to avoid. */
+@media (min-width: 1000px) {
+  .heroScene[data-mode="live"] ~ .hero__inner .hero__title {
+    max-width: min(15ch, 60%);
+    /* A narrower column at the old size runs to five lines and pushes
+       the call to action under the fold, which costs more than the
+       extra few pixels of type are worth. */
+    font-size: clamp(2.75rem, min(6.6vw, 10.5svh), 6.5rem);
+  }
+  .heroScene[data-mode="live"] ~ .hero__inner .hero__subtitle,
+  .heroScene[data-mode="live"] ~ .hero__inner .hero__rotate { max-width: 52%; }
+  .heroScene[data-mode="live"] ~ .hero__inner .stats { max-width: 66%; }
+}
+
+/* No room to move the diorama sideways on a phone, so the copy gets a
+   proper floor under it rather than a soft radial hint. */
+@media (max-width: 760px) {
+  .heroScene[data-mode="live"] ~ .hero__inner::before {
+    inset: -10% -8% 12% -8%;
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--sec-bg) 92%, transparent) 0%,
+      color-mix(in srgb, var(--sec-bg) 88%, transparent) 62%,
+      transparent 100%);
+  }
 }
 
 /* ---------------------------------------- Availability badge */
@@ -2881,9 +2927,451 @@ body.is-loading { overflow: hidden; }
   .heroScene__still { right: -6%; bottom: 6%; width: 78vw; }
 }
 
+/* ============================================================
+   10. Motion layer — shader hero, cinematic type, magnetism,
+       specular cards, shockwaves, particles, page fold
+   ============================================================ */
+
+/* ------------------------------- Hero: shader takes the floor */
+/* Once the GLSL background is live the CSS clouds are redundant
+   paint work, so they step aside and only the vignette and grain
+   stay to keep the title legible. */
+.heroScene[data-mode="live"] ~ .hero__fx .cloud,
+.heroScene[data-mode="live"] ~ .hero__fx .morph { display: none; }
+.hero__fx { z-index: 0; }
+.heroScene { z-index: 1; }
+
+/* Pinned to the viewport for as long as the hero is on screen, so the
+   scroll-driven morph plays where it can actually be seen. .hero keeps
+   overflow:hidden, which clips this back to the section on the way out. */
+.heroScene.is-pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: 100svh;
+}
+
+/* ------------------------------- Cinematic typography */
+/* Hero title: one span per letter, each arriving from its own Z. */
+.hero__title[data-split="letters"] {
+  perspective: 900px;
+  perspective-origin: 42% 50%;
+}
+.hero__title[data-split="letters"] .wd {
+  display: inline-block;
+  transform-style: preserve-3d;
+  white-space: nowrap;
+}
+.hero__title[data-split="letters"] .ltr {
+  display: inline-block;
+  opacity: 0;
+  transform:
+    translate3d(var(--mx, 0px), calc(0.55em + var(--my, 0px)), var(--lz, -400px))
+    rotateX(var(--lr, -18deg));
+  filter: blur(var(--lb, 10px));
+  transition:
+    opacity .55s var(--ease) var(--ld, 0ms),
+    transform 1.15s cubic-bezier(.16, 1, .3, 1) var(--ld, 0ms),
+    filter .8s var(--ease) var(--ld, 0ms);
+  will-change: transform, opacity, filter;
+}
+.hero__title[data-split="letters"].is-in .ltr {
+  opacity: 1;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  filter: blur(0);
+}
+/* Once the entrance is done the magnetic field takes over, and it
+   needs a short transition, not the long entrance one. */
+.hero__title[data-split="letters"].is-in .ltr {
+  transition:
+    transform .5s var(--ease),
+    opacity .55s var(--ease) var(--ld, 0ms),
+    filter .8s var(--ease) var(--ld, 0ms);
+}
+
+/* Section titles: a mask that lifts, line by line. */
+.sectionTitle[data-split="lines"],
+.contact__title[data-split="lines"],
+.quote__title[data-split="lines"],
+.homebuilder__title[data-split="lines"] { display: block; }
+
+.ln {
+  display: block;
+  overflow: hidden;
+  /* Descenders would be clipped by the mask without this. */
+  padding-bottom: .1em;
+  margin-bottom: -.1em;
+}
+.ln__in {
+  display: block;
+  transform: translate3d(0, 108%, 0);
+  transition: transform 1.05s cubic-bezier(.16, 1, .3, 1) var(--lnd, 0ms);
+  will-change: transform;
+}
+[data-split="lines"].is-visible .ln__in { transform: none; }
+/* The probe pass runs for a single frame while lines are measured. */
+.lnprobe { display: inline; }
+
+/* Letters inside a masked line only take the magnetic offset. */
+.ltr--plain {
+  display: inline-block;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform .5s var(--ease);
+}
+
+/* ------------------------------- 3D cylinder word */
+.hero__rotate {
+  display: flex;
+  align-items: center;
+  gap: .5em;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  letter-spacing: -.02em;
+  color: var(--sec-ink-soft);
+}
+.rotator {
+  position: relative;
+  display: inline-block;
+  height: 1.35em;
+  min-width: 5.5em;
+  perspective: 520px;
+  color: var(--sec-accent);
+  vertical-align: middle;
+}
+.rotator__cage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--turn, 0deg));
+  transition: transform .85s cubic-bezier(.62, .01, .18, 1);
+  will-change: transform;
+}
+.rotator__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  backface-visibility: hidden;
+  transform: rotateX(var(--a, 0deg)) translateZ(var(--r, 20px));
+  /* Only the facet turned toward the reader is drawn: at five faces the
+     next ones round the cylinder are still near enough to the camera to
+     be read as ghost text. */
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+}
+.rotator__face.is-front { opacity: 1; }
+
+/* ------------------------------- Magnetic buttons */
+.btn, .themebtn, .sound, .totop, .tmn__arrow, .maps__dot, .burger, .lang__button, .brief__close {
+  --mgx: 0px;
+  --mgy: 0px;
+}
+/* Each of these already animates transform; the magnet offset is
+   composed in front of whatever they were doing. */
+.btn { transform: translate3d(var(--mgx), var(--mgy), 0); }
+.btn--solid:hover { transform: translate3d(var(--mgx), calc(var(--mgy) - 4px), 0) scale(1.02); }
+.btn--solid:active { transform: translate3d(var(--mgx), calc(var(--mgy) - 1px), 0) scale(.96); }
+.btn--outline:hover { transform: translate3d(var(--mgx), calc(var(--mgy) - 4px), 0) scale(1.02); }
+.btn--outline:active { transform: translate3d(var(--mgx), calc(var(--mgy) - 1px), 0) scale(.96); }
+.btn--ghost:hover { transform: translate3d(var(--mgx), calc(var(--mgy) - 3px), 0); }
+.btn--ghost:active { transform: translate3d(var(--mgx), calc(var(--mgy) - 1px), 0) scale(.97); }
+.themebtn, .sound, .lang__button, .burger, .brief__close, .totop, .tmn__arrow, .maps__dot {
+  transform: translate3d(var(--mgx), var(--mgy), 0);
+}
+.tmn__arrow:hover { transform: translate3d(var(--mgx), var(--mgy), 0) scale(1.1); }
+.tmn__arrow:active { transform: translate3d(var(--mgx), var(--mgy), 0) scale(.94); }
+.brief__close:hover { transform: translate3d(var(--mgx), var(--mgy), 0) rotate(90deg); }
+.is-magnet { z-index: 4; }
+
+/* ------------------------------- Specular cards */
+.tilt, .pay__card, .tmn {
+  transform:
+    perspective(1100px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
+  transition: transform .7s var(--ease), box-shadow .6s var(--ease);
+}
+.tmn.is-active {
+  transform:
+    perspective(1100px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
+}
+.spec {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1 / 1;
+  margin: -75% 0 0 -75%;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255, 255, 255, .34) 0%,
+    rgba(255, 255, 255, .12) 26%,
+    rgba(255, 255, 255, 0) 58%);
+  mix-blend-mode: soft-light;
+  transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0);
+  transition: opacity .4s var(--ease);
+  will-change: transform;
+}
+.is-spec > .spec { opacity: 1; }
+/* Light cards need the sheen darker or it simply disappears. */
+.sec--cream .spec, .sec--orange .spec, .sec--sun .spec {
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255, 255, 255, .55) 0%,
+    rgba(255, 255, 255, .16) 30%,
+    rgba(0, 0, 0, .08) 62%,
+    rgba(0, 0, 0, 0) 74%);
+  mix-blend-mode: overlay;
+}
+/* The card glow now rides on a transform instead of top/left. */
+.map__glow {
+  top: 50%;
+  left: 50%;
+  transform: translate3d(var(--gx, 0px), var(--gy, 0px), 0);
+  will-change: transform;
+}
+
+/* ------------------------------- Click shockwave */
+.shock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--wr, 400px);
+  height: var(--wr, 400px);
+  margin: calc(var(--wr, 400px) / -2) 0 0 calc(var(--wr, 400px) / -2);
+  border-radius: 50%;
+  border: 2px solid var(--sec-accent, #fff);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transform: translate3d(var(--wx, 0px), var(--wy, 0px), 0) scale(0);
+  animation: shock .9s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+@keyframes shock {
+  0%   { opacity: .55; transform: translate3d(var(--wx), var(--wy), 0) scale(0); }
+  70%  { opacity: .16; }
+  100% { opacity: 0;   transform: translate3d(var(--wx), var(--wy), 0) scale(1); }
+}
+/* Sections clip their own waves; the curve at the top must not. */
+.sec, .proofband, .marquee, .footer { overflow-x: clip; }
+
+/* ------------------------------- Particles */
+.particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ------------------------------- Cursor states */
+.cursor__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%) scale(.6);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity .25s var(--ease), transform .35s var(--ease-bounce);
+}
+.cursor[data-state="view"] .cursor__ring { width: 96px; height: 96px; border-width: 0; background: rgba(255, 255, 255, .92); }
+.cursor[data-state="view"] .cursor__dot { opacity: 0; }
+.cursor[data-state="view"] .cursor__label { opacity: 1; transform: translate(-50%, -50%) scale(1); color: #0B0718; }
+.cursor[data-state="dot"] .cursor__ring { width: 52px; height: 52px; }
+.cursor[data-state="dot"] .cursor__dot { transform: translate(-50%, -50%) scale(.4); }
+.cursor[data-state="text"] .cursor__ring { width: 3px; height: 34px; border-radius: 2px; border-width: 0; background: #fff; }
+.cursor[data-state="text"] .cursor__dot { opacity: 0; }
+.cursor[data-state="arrow"] .cursor__ring { width: 58px; height: 58px; border-width: 3px; }
+.cursor[data-state="arrow"] .cursor__dot { transform: translate(-50%, -50%) scale(1.6); }
+.cursor__dot { transition: transform .25s var(--ease), opacity .25s var(--ease); }
+/* The label sits inside the ring, which is the element that moves. */
+.cursor__ring { display: grid; place-items: center; }
+
+/* ------------------------------- Scroll indicator */
+.scrollhint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18px, 3vh, 34px);
+  /* Centred it lands right under the middle statistic; on a wide screen
+     it moves out to the gutter where nothing else is. */
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  transform: translate3d(-50%, 0, 0);
+  opacity: 1;
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+}
+.scrollhint.is-gone { opacity: 0; transform: translate3d(-50%, 22px, 0); }
+@media (min-width: 1000px) {
+  .scrollhint { left: var(--gutter); transform: translate3d(0, 0, 0); justify-items: start; }
+  .scrollhint.is-gone { transform: translate3d(0, 22px, 0); }
+}
+.scrollhint__label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .68rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--sec-ink-soft);
+}
+.scrollhint__rail {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 40px;
+  border-radius: 999px;
+  border: 2px solid var(--sec-ink-soft);
+  opacity: .7;
+  overflow: hidden;
+}
+.scrollhint__bead {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 999px;
+  background: var(--sec-accent);
+  animation: bead 1.9s var(--ease-inout) infinite;
+}
+@keyframes bead {
+  0%, 12%  { transform: translate3d(0, 0, 0); opacity: 0; }
+  30%      { opacity: 1; }
+  75%      { transform: translate3d(0, 15px, 0); opacity: 0; }
+  100%     { transform: translate3d(0, 15px, 0); opacity: 0; }
+}
+
+/* ------------------------------- Scroll planes */
+/* Decor first, then the title, then the content, then the fine
+   print — a plane every 120 ms on top of each element's own delay. */
+[data-plane] { --plane-d: 0ms; }
+[data-plane="0"] { --plane-d: 0ms; }
+[data-plane="1"] { --plane-d: 120ms; }
+[data-plane="2"] { --plane-d: 250ms; }
+[data-plane="3"] { --plane-d: 390ms; }
+[data-reveal] {
+  transition:
+    opacity .7s var(--ease) calc(var(--d, 0) * 90ms + var(--plane-d, 0ms)),
+    transform .95s var(--ease-bounce) calc(var(--d, 0) * 90ms + var(--plane-d, 0ms));
+}
+[data-plane] [data-reveal] { --plane-d: inherit; }
+[data-reveal="none"] { transform: none; }
+
+/* ------------------------------- Parallax layers */
+.map__media img { transform: translate3d(0, var(--py, 0px), 0); }
+.map__media:hover img { transform: translate3d(0, var(--py, 0px), 0) scale(1.05); }
+.map__index, .map__body { transform: translate3d(0, var(--py, 0px), 0); }
+
+/* ------------------------------- Marquee driven by JS */
+.marquee__row.is-driven {
+  animation: none;
+  will-change: transform;
+}
+
+/* ------------------------------- Progressive image blur-up */
+.map__media img, .homebuilder img {
+  filter: blur(16px);
+  transform: translate3d(0, var(--py, 0px), 0) scale(1.06);
+  transition: filter .8s var(--ease), opacity .6s var(--ease), transform 1.2s var(--ease);
+}
+.map__media img.is-sharp, .homebuilder img.is-sharp {
+  filter: blur(0);
+  transform: translate3d(0, var(--py, 0px), 0) scale(1);
+}
+.lqip { background: linear-gradient(120deg, var(--sec-bg), var(--sec-accent)); }
+
+/* ------------------------------- Page fold */
+.pagefade { perspective: 1400px; }
+
+@keyframes foldOut {
+  from { opacity: 1; transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: perspective(1600px) rotateY(-16deg) translate3d(-8vw, 0, -420px); }
+}
+@keyframes foldIn {
+  from { opacity: 0; transform: perspective(1600px) rotateY(14deg) translate3d(7vw, 0, -380px); }
+  to   { opacity: 1; transform: perspective(1600px) rotateY(0deg) translate3d(0, 0, 0); }
+}
+
+/* Opt the whole site into cross-document transitions: on a same-origin
+   navigation the browser keeps a snapshot of both pages and animates
+   between them, which is the only way the fold can show the page you
+   are leaving AND the one arriving. */
+@view-transition { navigation: auto; }
+
+/* View Transitions: the browser holds a snapshot of each page, so
+   the fold is played on those snapshots and looks like one card
+   turning over. */
+::view-transition-old(root) {
+  animation: foldOut .56s cubic-bezier(.65, .05, .36, 1) both;
+  transform-origin: 12% 50%;
+}
+::view-transition-new(root) {
+  animation: foldIn .6s cubic-bezier(.16, 1, .3, 1) .12s both;
+  transform-origin: 88% 50%;
+}
+
+/* Fallback: no snapshots, so the live page folds and a veil covers
+   the swap. Same curve, same direction. */
+html:not(.has-vt).is-folding body {
+  animation: foldOut .5s cubic-bezier(.65, .05, .36, 1) both;
+  transform-origin: 12% 50%;
+}
+html.is-unfolding body {
+  animation: foldIn .62s cubic-bezier(.16, 1, .3, 1) both;
+  transform-origin: 88% 50%;
+}
+
+/* ------------------------------- Frame-rate guard
+   fx.js sets data-perf when frames stay long. "lite" keeps the
+   composition and only cuts what costs fill rate; "min" drops the
+   decorative layers entirely. Colours and layout never change, so
+   the page still looks like itself at every rung. */
+[data-perf="lite"] { --u-blur: .45; }
+[data-perf="lite"] .cloud::before { filter: blur(calc(var(--soft, 80px) * .4)); }
+[data-perf="lite"] .blob { filter: blur(38px); }
+[data-perf="lite"] .morph { display: none; }
+[data-perf="lite"] .header { backdrop-filter: none; }
+
+[data-perf="min"] .cloud, [data-perf="min"] .blob, [data-perf="min"] .morph { display: none; }
+[data-perf="min"] .hero__grain { display: none; }
+[data-perf="min"] .particles { display: none; }
+[data-perf="min"] .header { backdrop-filter: none; }
+[data-perf="min"] .spec { display: none; }
+[data-perf="min"] .brief__scrim { backdrop-filter: none; }
+
+/* ------------------------------- Motion intensity */
+[data-motion="reduced"] .scrollhint__bead,
+[data-motion="off"] .scrollhint__bead { animation: none; opacity: .8; }
+[data-motion="off"] .rotator__cage { transition: none; }
+[data-motion="off"] .particles { display: none; }
+[data-motion="off"] .hero__title .ltr,
+[data-motion="off"] .ln__in { transition: none; transform: none; filter: none; opacity: 1; }
+
 /* Touch: no custom cursor, no tilt, lighter blur */
 @media (hover: none), (pointer: coarse) {
   .cursor { display: none; }
+  /* Nothing to point with, so the sheen and the magnets stay home. */
+  .spec { display: none; }
+  .tilt, .pay__card, .tmn { transform: none; }
   .blob { filter: blur(calc(60px * var(--u-blur, 1))); }
   .morph { display: none; }
   .cloud::before { filter: blur(calc(64px * var(--u-blur, 1))); }
@@ -2908,6 +3396,25 @@ body.is-loading { overflow: hidden; }
   .cloud::before, .hero__grain, .hero .morph path { animation: none; }
   .hero__grain { opacity: .04; }
   .hero__title .word__in { transform: none; }
+
+  /* The whole motion layer is off: no shader, no letters flying in,
+     no masks, no magnets, no particles, no fold. */
+  .particles { display: none; }
+  .hero__title[data-split="letters"] .ltr {
+    opacity: 1; transform: none; filter: none; transition: none;
+  }
+  .ln__in { transform: none; transition: none; }
+  .ln { overflow: visible; }
+  .rotator__cage { transition: none; }
+  .spec { display: none; }
+  .tilt, .pay__card, .tmn { transform: none; }
+  .map__media img, .homebuilder img { filter: none; transform: none; transition: none; }
+  .scrollhint__bead { animation: none; opacity: .8; }
+  .shock { display: none; }
+  .marquee__row.is-driven { transform: none !important; }
+  html.is-unfolding body, html.is-folding body { animation: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+
   .avail[data-state="open"] .avail__dot::after { animation: none; opacity: 0; }
   .tmn { transition: none; }
   .brief__step.is-in, .brief__result.is-in { animation: none; }
