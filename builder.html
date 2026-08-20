@@ -63,6 +63,7 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <a class="nav__link" href="index.html#services" data-i18n="nav.services">Services</a>
+      <a class="nav__link" href="index.html#estimate" data-i18n="nav.estimate">Estimateur</a>
       <a class="nav__link" href="index.html#portfolio" data-i18n="nav.portfolio">Portfolio</a>
       <a class="nav__link" href="index.html#process" data-i18n="nav.process">Process</a>
       <a class="nav__link" href="index.html#pricing" data-i18n="nav.pricing">Tarifs</a>
@@ -73,6 +74,12 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
     </nav>
 
     <div class="header__actions">
+      <!-- Driven by the AVAILABILITY constant at the top of main.js. -->
+      <p class="avail" id="availability" data-state="open">
+        <span class="avail__dot" aria-hidden="true"></span>
+        <span class="avail__text" data-i18n="avail.open">Dispo cette semaine</span>
+      </p>
+
       <button class="themebtn" id="themeToggle" type="button" aria-expanded="false" aria-controls="themePanel"
               data-i18n="a11y.themeOpen" data-i18n-attr="aria-label" aria-label="Personnaliser le thème">
         <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">

@@ -9,6 +9,54 @@
 
   /* Replace with the real Stripe payment link once it exists. */
   var STRIPE_LINK = 'https://buy.stripe.com/REMPLACER';
+
+  /* ==========================================================
+     TUNABLES — the three tables below are meant to be edited by
+     hand. Nothing else in the codebase hardcodes these numbers.
+     ========================================================== */
+
+  /* Price estimator, in euros.
+       base      starting price per map type
+       size      multiplier applied to the base
+       options   flat supplement per checked option
+       rush      multiplier when the deadline is urgent
+       spread    upper bound = lower bound x (1 + spread)        */
+  var PRICING = {
+    base: {
+      '1v1': 30,
+      boxfight: 40,
+      tycoon: 60,
+      rp: 60,
+      zonewars: 60,
+      other: 60
+    },
+    size: {
+      small: 1,
+      medium: 1.6,
+      large: 2.4
+    },
+    options: {
+      verse: 25,     /* custom Verse systems       */
+      decor: 20,     /* detailed scenery           */
+      multi: 30,     /* advanced multiplayer mode  */
+      hud: 15,       /* custom HUD                 */
+      shop: 20       /* in-game shop               */
+    },
+    rush: 1.35,
+    spread: 0.35,
+    currency: '€'
+  };
+
+  /* Animated counters in the social-proof band. Placeholders: set the
+     real figures before going live. */
+  var STATS = {
+    maps: 12,
+    clients: 10,
+    years: 3
+  };
+
+  /* Header availability badge: 'open' or 'full'. */
+  var AVAILABILITY = 'open';
   var I18N = window.DIQ_I18N;
 
   var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -117,6 +165,16 @@
     renderMarquees();
     splitHeroTitle();
     if (modalState.open) renderModal(modalState.key);
+
+    /* Anything rendered in JS (estimator readout, brief questions) listens
+       for this instead of re-reading the DOM on a timer. */
+    try {
+      document.dispatchEvent(new CustomEvent('diq:lang', { detail: { lang: code } }));
+    } catch (e) {
+      var ev = document.createEvent('CustomEvent');
+      ev.initCustomEvent('diq:lang', false, false, { lang: code });
+      document.dispatchEvent(ev);
+    }
   }
 
   function has(key) {
@@ -1304,6 +1362,32 @@
     }
   }
 
+
+  /* ==========================================================
+     Availability badge
+     ========================================================== */
+  function initAvailability() {
+    var badge = $('#availability');
+    if (!badge) return;
+    var open = AVAILABILITY !== 'full';
+    badge.setAttribute('data-state', open ? 'open' : 'full');
+    var label = badge.querySelector('.avail__text');
+    if (label) {
+      label.setAttribute('data-i18n', open ? 'avail.open' : 'avail.full');
+      label.textContent = t(open ? 'avail.open' : 'avail.full');
+    }
+  }
+
+  /* Social-proof counters read their target from STATS. */
+  function initProofCounters() {
+    $$('[data-stat]').forEach(function (el) {
+      var key = el.getAttribute('data-stat');
+      if (STATS[key] == null) return;
+      el.setAttribute('data-count', String(STATS[key]));
+      el.textContent = reduced() ? String(STATS[key]) : '0';
+    });
+  }
+
   /* ==========================================================
      8. Mobile navigation
      ========================================================== */
@@ -1365,6 +1449,7 @@
 
     initLangUI();
     collectToneBlocks();
+    initAvailability();
     applyLang(detectLang(), false);
     initSound();
 
@@ -1384,6 +1469,7 @@
     initPageTransition();
     initKonami();
     wireStripeLinks();
+    initProofCounters();
 
     /* Reveals wait for the loader so the hero actually animates in
        behind the sweep instead of having played out of sight. */
@@ -1418,6 +1504,20 @@
   global.DIQ.getSound = function () { return Sound.isOn(); };
   global.DIQ.t = t;
   global.DIQ.STRIPE_LINK = STRIPE_LINK;
+  global.DIQ.DISCORD = DISCORD;
+  global.DIQ.PRICING = PRICING;
+  global.DIQ.STATS = STATS;
+  global.DIQ.AVAILABILITY = AVAILABILITY;
+  global.DIQ.reduced = reduced;
+  global.DIQ.countUp = countUp;
+  global.DIQ.whoosh = function (up) { Sound.whoosh(!!up); };
+  global.DIQ.copy = function (text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });
+    } else {
+      legacyCopy(text, done);
+    }
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

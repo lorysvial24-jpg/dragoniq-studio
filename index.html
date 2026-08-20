@@ -105,6 +105,7 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <a class="nav__link" href="#services" data-i18n="nav.services">Services</a>
+      <a class="nav__link" href="#estimate" data-i18n="nav.estimate">Estimateur</a>
       <a class="nav__link" href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
       <a class="nav__link" href="#process" data-i18n="nav.process">Process</a>
       <a class="nav__link" href="#pricing" data-i18n="nav.pricing">Tarifs</a>
@@ -115,6 +116,12 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
     </nav>
 
     <div class="header__actions">
+      <!-- Driven by the AVAILABILITY constant at the top of main.js. -->
+      <p class="avail" id="availability" data-state="open">
+        <span class="avail__dot" aria-hidden="true"></span>
+        <span class="avail__text" data-i18n="avail.open">Dispo cette semaine</span>
+      </p>
+
       <button class="themebtn" id="themeToggle" type="button" aria-expanded="false" aria-controls="themePanel"
               data-i18n="a11y.themeOpen" data-i18n-attr="aria-label" aria-label="Personnaliser le thème">
         <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true" focusable="false">
@@ -198,6 +205,14 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
     <span class="hero__glow" id="heroGlow"></span>
     <span class="hero__grain"></span>
+  </div>
+
+  <!-- Low-poly floating island. hero3d.js flips data-mode to "live" once
+       three.js and WebGL are both available; otherwise the still below
+       stays and the animated gradient above carries the section alone. -->
+  <div class="heroScene" id="heroScene" data-mode="fallback" aria-hidden="true">
+    <canvas class="heroScene__canvas" id="heroCanvas"></canvas>
+    <span class="heroScene__still"></span>
   </div>
 
   <div class="shell hero__inner">
@@ -330,6 +345,146 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
   </div>
 </section>
 
+<!-- ======================= ESTIMATEUR ======================= -->
+<section class="sec sec--lime estimate" id="estimate" aria-labelledby="estimateTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,58 C240,4 520,102 820,66 C1080,34 1290,10 1440,46 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--3"></span><span class="blob blob--6"></span></div>
+
+  <div class="shell">
+    <header class="sectionHead">
+      <p class="kicker" data-reveal="left" data-i18n="est.kicker">Estimation</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="estimateTitle" data-i18n="est.title">Estime ton projet</h2>
+      <p class="sectionLead" data-reveal="right" data-reveal-delay="2" data-i18n="est.lead">Ajuste les curseurs, la fourchette se met à jour en direct.</p>
+    </header>
+
+    <div class="est">
+      <form class="est__form" id="estForm" data-reveal="left" data-reveal-delay="2">
+        <fieldset class="est__group">
+          <legend class="est__legend" data-i18n="est.type">Type de map</legend>
+          <div class="est__chips">
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="1v1" checked>
+          <span class="chip__face" data-i18n="est.type.1v1">1v1</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="boxfight">
+          <span class="chip__face" data-i18n="est.type.boxfight">Box Fight</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="tycoon">
+          <span class="chip__face" data-i18n="est.type.tycoon">Tycoon</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="rp">
+          <span class="chip__face" data-i18n="est.type.rp">RP</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="zonewars">
+          <span class="chip__face" data-i18n="est.type.zonewars">Zone Wars</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-type" value="other">
+          <span class="chip__face" data-i18n="est.type.other">Autre</span>
+        </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend class="est__legend" data-i18n="est.size">Taille</legend>
+          <div class="est__chips">
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-size" value="small">
+          <span class="chip__face" data-i18n="est.size.small">Petite</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-size" value="medium" checked>
+          <span class="chip__face" data-i18n="est.size.medium">Moyenne</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-size" value="large">
+          <span class="chip__face" data-i18n="est.size.large">Grande</span>
+        </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend class="est__legend" data-i18n="est.options">Options</legend>
+          <div class="est__opts">
+        <label class="opt">
+          <input class="opt__input" type="checkbox" name="est-opt" value="verse">
+          <span class="opt__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="12" height="12" focusable="false"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="opt__label" data-i18n="est.opt.verse">Systèmes Verse personnalisés</span>
+        </label>
+        <label class="opt">
+          <input class="opt__input" type="checkbox" name="est-opt" value="decor">
+          <span class="opt__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="12" height="12" focusable="false"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="opt__label" data-i18n="est.opt.decor">Décor détaillé</span>
+        </label>
+        <label class="opt">
+          <input class="opt__input" type="checkbox" name="est-opt" value="multi">
+          <span class="opt__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="12" height="12" focusable="false"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="opt__label" data-i18n="est.opt.multi">Mode multijoueur avancé</span>
+        </label>
+        <label class="opt">
+          <input class="opt__input" type="checkbox" name="est-opt" value="hud">
+          <span class="opt__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="12" height="12" focusable="false"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="opt__label" data-i18n="est.opt.hud">HUD sur mesure</span>
+        </label>
+        <label class="opt">
+          <input class="opt__input" type="checkbox" name="est-opt" value="shop">
+          <span class="opt__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="12" height="12" focusable="false"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="opt__label" data-i18n="est.opt.shop">Boutique en jeu</span>
+        </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend class="est__legend" data-i18n="est.delay">Délai souhaité</legend>
+          <div class="est__chips">
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-delay" value="normal" checked>
+          <span class="chip__face" data-i18n="est.delay.normal">Normal</span>
+        </label>
+        <label class="chip">
+          <input class="chip__input" type="radio" name="est-delay" value="rush">
+          <span class="chip__face" data-i18n="est.delay.rush">Urgent</span>
+        </label>
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="est__panel" data-reveal="right" data-reveal-delay="3">
+        <p class="est__label" data-i18n="est.result">Fourchette estimée</p>
+        <p class="est__price" aria-hidden="true">
+          <span class="est__num" id="estLow">30</span>
+          <span class="est__dash">–</span>
+          <span class="est__num" id="estHigh">41</span>
+          <span class="est__cur" id="estCur">€</span>
+        </p>
+        <p class="visually-hidden" id="estLive" role="status" aria-live="polite"></p>
+        <p class="est__note" data-i18n="est.note">Estimation indicative — le prix final est confirmé dans le ticket.</p>
+        <div class="est__actions">
+          <a class="btn btn--solid" id="estStripe" href="#contact" data-i18n="pay.online.cta">Payer avec Stripe</a>
+          <a class="btn btn--outline" id="estDiscord" href="#contact" target="_blank" rel="noopener noreferrer" data-i18n="common.orderCta">Ouvrir un ticket sur Discord</a>
+        </div>
+        <button class="btn btn--ghost btn--sm est__brief" type="button" data-brief-open data-i18n="brief.open">Préparer ma demande</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= PORTFOLIO ======================= -->
 <section class="sec sec--maps maps tone-1" id="portfolio" aria-labelledby="portfolioTitle">
   <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
@@ -430,6 +585,25 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
     </aside>
   </div>
 </section>
+
+<!-- ======================= PREUVE — COMPTEURS ======================= -->
+<!-- Figures come from the STATS constant at the top of main.js. -->
+<aside class="proofband" id="proofband" aria-label="DragonIQ.Studio en chiffres">
+  <div class="shell proofband__inner">
+    <p class="proofband__item" data-reveal="up">
+      <span class="proofband__value"><span data-stat="maps" data-count="0">0</span><span class="proofband__plus" aria-hidden="true">+</span></span>
+      <span class="proofband__label" data-i18n="proof.maps">Maps livrées</span>
+    </p>
+    <p class="proofband__item" data-reveal="up" data-reveal-delay="1">
+      <span class="proofband__value"><span data-stat="clients" data-count="0">0</span><span class="proofband__plus" aria-hidden="true">+</span></span>
+      <span class="proofband__label" data-i18n="proof.clients">Clients satisfaits</span>
+    </p>
+    <p class="proofband__item" data-reveal="up" data-reveal-delay="2">
+      <span class="proofband__value"><span data-stat="years" data-count="0">0</span></span>
+      <span class="proofband__label" data-i18n="proof.years">Années d’expérience</span>
+    </p>
+  </div>
+</aside>
 
 <!-- ======================= VERSUS ======================= -->
 <section class="sec sec--cream versus" id="versus" aria-labelledby="versusTitle">
@@ -551,6 +725,79 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
   </div>
 </section>
 
+<!-- ======================= TÉMOIGNAGES ======================= -->
+<section class="sec sec--sun proof" id="proof" aria-labelledby="proofTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,40 C260,96 560,6 880,44 C1120,72 1310,98 1440,62 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--4"></span><span class="blob blob--5"></span></div>
+
+  <div class="shell">
+    <header class="sectionHead sectionHead--center">
+      <p class="kicker" data-reveal="up" data-i18n="proof.kicker">Retours</p>
+      <h2 class="sectionTitle" data-reveal="up" data-reveal-delay="1" id="proofTitle" data-i18n="proof.title">Ce qu’en disent les clients</h2>
+    </header>
+
+    <div class="tmn__wrap" id="proofCarousel" data-reveal="up" data-reveal-delay="2">
+      <button class="tmn__arrow tmn__arrow--prev" id="tmnPrev" type="button"
+              data-i18n="proof.prev" data-i18n-attr="aria-label" aria-label="Témoignage précédent">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M14.5 5 8 12l6.5 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="tmn__stage">
+        <article class="tmn is-active" role="group" aria-roledescription="slide" aria-label="1 / 3">
+          <svg class="tmn__mark" viewBox="0 0 40 32" width="34" height="28" aria-hidden="true" focusable="false">
+            <path d="M15 3C8 6 3 12 3 20c0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C10.6 12 13 8.6 17 6.2zM36 3c-7 3-12 9-12 17 0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C31.6 12 34 8.6 38 6.2z" fill="currentColor"/>
+          </svg>
+          <blockquote class="tmn__quote"><p data-i18n="proof.t1.quote">Témoignage à remplacer.</p></blockquote>
+          <p class="tmn__who">
+            <span class="tmn__name" data-i18n="proof.t1.name">@Pseudo1</span>
+            <span class="tmn__type" data-i18n="proof.t1.type">Map</span>
+          </p>
+        </article>
+        <article class="tmn" role="group" aria-roledescription="slide" aria-label="2 / 3">
+          <svg class="tmn__mark" viewBox="0 0 40 32" width="34" height="28" aria-hidden="true" focusable="false">
+            <path d="M15 3C8 6 3 12 3 20c0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C10.6 12 13 8.6 17 6.2zM36 3c-7 3-12 9-12 17 0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C31.6 12 34 8.6 38 6.2z" fill="currentColor"/>
+          </svg>
+          <blockquote class="tmn__quote"><p data-i18n="proof.t2.quote">Témoignage à remplacer.</p></blockquote>
+          <p class="tmn__who">
+            <span class="tmn__name" data-i18n="proof.t2.name">@Pseudo2</span>
+            <span class="tmn__type" data-i18n="proof.t2.type">Map</span>
+          </p>
+        </article>
+        <article class="tmn" role="group" aria-roledescription="slide" aria-label="3 / 3">
+          <svg class="tmn__mark" viewBox="0 0 40 32" width="34" height="28" aria-hidden="true" focusable="false">
+            <path d="M15 3C8 6 3 12 3 20c0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C10.6 12 13 8.6 17 6.2zM36 3c-7 3-12 9-12 17 0 5.5 3.4 9 8 9 4.2 0 7.3-3 7.3-7.1 0-4-2.9-6.9-6.7-6.9-.8 0-1.6.1-2.2.4C31.6 12 34 8.6 38 6.2z" fill="currentColor"/>
+          </svg>
+          <blockquote class="tmn__quote"><p data-i18n="proof.t3.quote">Témoignage à remplacer.</p></blockquote>
+          <p class="tmn__who">
+            <span class="tmn__name" data-i18n="proof.t3.name">@Pseudo3</span>
+            <span class="tmn__type" data-i18n="proof.t3.type">Map</span>
+          </p>
+        </article>
+      </div>
+
+      <button class="tmn__arrow tmn__arrow--next" id="tmnNext" type="button"
+              data-i18n="proof.next" data-i18n-attr="aria-label" aria-label="Témoignage suivant">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M9.5 5 16 12l-6.5 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="tmn__dots" role="tablist" aria-label="Témoignages">
+        <button class="tmn__dot" type="button" role="tab" aria-selected="true" tabindex="0"
+                aria-label="1 / 3"></button>
+        <button class="tmn__dot" type="button" role="tab" aria-selected="false" tabindex="-1"
+                aria-label="2 / 3"></button>
+        <button class="tmn__dot" type="button" role="tab" aria-selected="false" tabindex="-1"
+                aria-label="3 / 3"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= FAQ ======================= -->
 <section class="sec sec--teal faq" id="faq" aria-labelledby="faqTitle">
   <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
@@ -668,6 +915,10 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
     <p class="kicker" data-reveal="up" data-i18n="contact.kicker">Contact</p>
     <h2 class="contact__title" data-reveal="up" data-reveal-delay="1" id="contactTitle" data-i18n="contact.title">On commande sur Discord</h2>
     <p class="contact__desc" data-reveal="up" data-reveal-delay="2" data-i18n="contact.desc">Toutes les commandes passent par un ticket sur le serveur. C'est là qu'on discute du brief, du devis et de l'avancement du projet.</p>
+
+    <p class="contact__prep" data-reveal="up" data-reveal-delay="2">
+      <button class="btn btn--ghost" type="button" data-brief-open data-i18n="brief.open">Préparer ma demande</button>
+    </p>
 
     <div class="pay" data-reveal="up" data-reveal-delay="3">
       <article class="pay__card">
@@ -791,6 +1042,51 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
   </div>
 </div>
 
+<!-- ======================= GÉNÉRATEUR DE BRIEF ======================= -->
+<div class="brief" id="brief" hidden>
+  <div class="brief__scrim" data-brief-close aria-hidden="true"></div>
+
+  <div class="brief__panel" id="briefPanel" role="dialog" aria-modal="true" aria-labelledby="briefHeading" tabindex="-1">
+    <button class="brief__close" type="button" data-brief-close
+            data-i18n="brief.close" data-i18n-attr="aria-label" aria-label="Fermer le générateur de brief">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <p class="kicker" data-i18n="brief.open">Préparer ma demande</p>
+    <h2 class="brief__heading" id="briefHeading" data-i18n="brief.title">Préparer ta demande</h2>
+
+    <div class="brief__step is-in" id="briefStep">
+      <p class="brief__progress" id="briefProgress">Question 1 sur 7</p>
+      <div class="brief__bar" id="briefBar" aria-hidden="true"><span></span></div>
+
+      <h3 class="brief__q" id="briefQ">Quel type de map veux-tu ?</h3>
+      <p class="brief__hint" id="briefHint">1v1, Box Fight, Tycoon, RP, Zone Wars…</p>
+      <textarea class="brief__input" id="briefInput" rows="3" autocomplete="off"></textarea>
+
+      <div class="brief__nav">
+        <button class="btn btn--ghost btn--sm" type="button" id="briefPrev" data-i18n="brief.prev">Précédent</button>
+        <button class="btn btn--ghost btn--sm" type="button" id="briefSkip" data-i18n="brief.skip">Passer</button>
+        <button class="btn btn--solid btn--sm" type="button" id="briefNext" data-i18n="brief.next">Suivant</button>
+      </div>
+    </div>
+
+    <div class="brief__result" id="briefResult" hidden>
+      <h3 class="brief__q" data-i18n="brief.resultTitle">Ton brief est prêt</h3>
+      <p class="brief__hint" data-i18n="brief.resultLead">Copie ce texte et colle-le dans ton ticket Discord.</p>
+      <pre class="brief__out" id="briefOut" tabindex="0"></pre>
+      <p class="brief__attach" data-i18n="brief.attach">Tu peux aussi joindre le PNG exporté depuis le constructeur.</p>
+
+      <div class="brief__nav">
+        <button class="btn btn--solid btn--sm" type="button" id="briefCopy" data-i18n="brief.copy">Copier le brief</button>
+        <a class="btn btn--outline btn--sm" id="briefDiscord" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="brief.discord">Ouvrir le ticket Discord</a>
+        <button class="btn btn--ghost btn--sm" type="button" id="briefRestart" data-i18n="brief.restart">Recommencer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <button class="totop" id="toTop" type="button"
         data-i18n="a11y.toTop" data-i18n-attr="aria-label" aria-label="Retour en haut">
   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
@@ -803,7 +1099,9 @@ else{r.style.setProperty('--u-'+k,v);}}}catch(e){}})();
 
 <script src="i18n.js"></script>
 <script src="main.js"></script>
+<script src="tools.js"></script>
 <script src="theme.js"></script>
 <script src="builder.js"></script>
+<script src="hero3d.js"></script>
 </body>
 </html>
