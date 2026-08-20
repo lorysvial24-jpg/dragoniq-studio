@@ -16,6 +16,9 @@ npx http-server . -p 8080
 
 ```
 index.html     Loader + sections + SEO (OG, Twitter Card, JSON-LD Organization)
+builder.html   Constructeur de map isometrique (header/footer/modale partages)
+builder.css    Styles propres au constructeur (le reste vient de styles.css)
+builder.js     Moteur isometrique : projection, formes, themes, editeur, export
 styles.css     Tokens & palettes -> reset -> chrome -> primitives -> sections -> marquee -> modale
                -> loader -> son -> portfolio scroll -> versus -> FAQ -> motion
 i18n.js        Dictionnaires des 6 langues (objet plat cle -> texte)
@@ -181,6 +184,9 @@ largeur d'ecran.
 
 ## Langues
 
+Chaque page declare ses propres cles de metadonnees via `<html data-meta="...">` :
+la page d'accueil utilise `meta.*`, le constructeur `builder.meta.*`.
+
 FR, EN, PT, ES, IT, DE. Detection via `navigator.languages` (fallback EN), memorisation
 dans `localStorage` (`diq-lang`), changement par le menu du header ou le selecteur du
 footer. Met a jour `<html lang>`, le `<title>`, la meta description, les balises Open
@@ -203,6 +209,51 @@ Graph / Twitter et les bandeaux marquee.
 - Attention aux surfaces translucides : un voile **blanc** pose sur une section de
   ton moyen eclaircit le fond et fait passer le texte secondaire sous AA. Les cartes
   du process et de la FAQ utilisent donc un voile sombre.
+
+## Le constructeur de map
+
+`builder.html` laisse un visiteur esquisser sa map en isometrique, l'exporter en PNG
+et joindre l'image a son ticket. Aucune dependance : tout est du canvas 2D.
+
+**Geometrie.** `project(x, y, z)` est lineaire, donc les coordonnees fractionnaires se
+projettent aussi bien que les entieres — c'est ce qui permet a une seule primitive
+(`box()`) de dessiner aussi bien une tuile entiere qu'une marche d'escalier. Grille de
+24x24 sur 6 niveaux, tri painter par `x + y` puis `z`.
+
+**Rendu a la demande.** La boucle ne repeint que si un drapeau `dirty` est leve : zero
+repaint au repos (mesure), et le cout de dessin reste sous le budget 60 fps
+(mesure : 1,5 ms a 200 blocs, 4,6 ms a 800, 13,4 ms a 2000). La liste de cellules est
+mise en cache et invalidee a chaque mutation.
+
+**Le lattice suit le niveau actif.** Quand on monte d'un cran, le plan de pose monte
+aussi : dessiner la grille au sol donnerait l'impression de viser a cote. La grille
+claire est donc tracee sur le plan courant, le sol restant visible en filigrane.
+
+**Historique.** Un appui-glisser-relacher = une entree contenant les `{cle, avant,
+apres}` de toutes les cases touchees, plafonne a 60 entrees. « Tout effacer » est
+enregistre comme une seule entree, donc annulable.
+
+**Export.** `renderExport()` recadre la scene sur les blocs poses, ajoute le titre, le
+nombre de blocs, la legende des elements utilises et la signature. Le logo est dessine
+quand il est disponible ; ouvert en `file://` il « teinte » le canvas et `toDataURL`
+leve une exception — le code retombe alors sur une signature texte. Les deux chemins
+sont testes.
+
+**Ajouter un element.** Une entree dans `ELEMENTS` (`id`, `cat`, `role`, hauteur,
+`shape`), la cle `builder.el.<id>` dans les 6 langues, et c'est tout : l'icone de la
+palette est dessinee avec le meme code que le bloc, donc les deux ne peuvent pas
+diverger. Les couleurs viennent du `role`, que chaque theme remappe — aucune couleur
+codee en dur par element.
+
+**Themes.** `THEMES` mappe role -> couleur pour Fortnite classique, Desert, Neige,
+Neon et Horreur. Les faces sont derivees automatiquement (dessus eclairci, gauche
+moyenne, droite assombrie).
+
+**Tactile.** Appui pour poser, appui long pour supprimer, deux doigts pour deplacer et
+zoomer. Sous 760 px un bandeau suggere l'ordinateur sans jamais bloquer l'outil.
+
+**Sauvegarde.** Le plan est ecrit dans `localStorage` (`diq-builder`) avec un debounce
+de 400 ms, sous forme compacte `[x, y, z, type, rotation]`.
 
 ## Deploiement
 

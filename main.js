@@ -79,14 +79,21 @@
     });
 
     document.documentElement.setAttribute('lang', code);
-    document.title = t('meta.title');
 
-    setMeta('name', 'description', t('meta.description'));
-    setMeta('property', 'og:title', t('meta.ogTitle'));
-    setMeta('property', 'og:description', t('meta.ogDescription'));
+    /* Each page names its own metadata keys via <html data-meta="…">. */
+    var mk = document.documentElement.getAttribute('data-meta') || 'meta';
+    var titleKey = mk + '.title';
+    var descKey = mk + '.description';
+    var ogTitleKey = has(mk + '.ogTitle') ? mk + '.ogTitle' : titleKey;
+    var ogDescKey = has(mk + '.ogDescription') ? mk + '.ogDescription' : descKey;
+
+    document.title = t(titleKey);
+    setMeta('name', 'description', t(descKey));
+    setMeta('property', 'og:title', t(ogTitleKey));
+    setMeta('property', 'og:description', t(ogDescKey));
     setMeta('property', 'og:locale', meta.locale);
-    setMeta('name', 'twitter:title', t('meta.ogTitle'));
-    setMeta('name', 'twitter:description', t('meta.ogDescription'));
+    setMeta('name', 'twitter:title', t(ogTitleKey));
+    setMeta('name', 'twitter:description', t(ogDescKey));
 
     var soundBtn = $('#soundToggle');
     if (soundBtn) soundBtn.setAttribute('aria-label', t(soundBtn.getAttribute('data-i18n') || 'a11y.soundOn'));
@@ -107,6 +114,13 @@
     renderMarquees();
     splitHeroTitle();
     if (modalState.open) renderModal(modalState.key);
+  }
+
+  function has(key) {
+    var dict = I18N.translations[currentLang] || {};
+    if (Object.prototype.hasOwnProperty.call(dict, key)) return true;
+    var fb = I18N.translations[I18N.fallback] || {};
+    return Object.prototype.hasOwnProperty.call(fb, key);
   }
 
   function setMeta(attr, name, value) {
@@ -935,6 +949,13 @@
         { key: 'common.playCta', href: 'https://fortnite.gg/island/1445-1331-8129', variant: 'solid' },
         { key: 'common.orderCta', href: DISCORD, variant: 'outline' }
       ]
+    },
+    help: {
+      kicker: 'builder.help', title: 'builder.help.title', desc: 'builder.help.intro',
+      list: ['builder.help.k1', 'builder.help.k2', 'builder.help.k3', 'builder.help.k4',
+             'builder.help.k5', 'builder.help.k6', 'builder.help.k7', 'builder.help.k8',
+             'builder.help.k9'],
+      actions: []
     },
     p2: {
       kicker: 'portfolio.p2.tag', title: 'portfolio.p2.title', desc: 'portfolio.p2.long',

@@ -97,6 +97,7 @@
       <a class="nav__link" href="#process" data-i18n="nav.process">Process</a>
       <a class="nav__link" href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a class="nav__link" href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a class="nav__link" href="builder.html" data-i18n="nav.builder">Constructeur</a>
       <a class="nav__link" href="#contact" data-i18n="nav.contact">Contact</a>
       <a class="nav__link nav__link--cta" href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer" data-i18n="nav.order">Commander</a>
     </nav>
@@ -430,6 +431,29 @@
   </div>
 </section>
 
+<!-- ======================= BUILDER ======================= -->
+<section class="sec sec--night homebuilder" id="builder" aria-labelledby="builderTitle">
+  <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,48 C250,100 560,12 880,50 C1120,78 1310,26 1440,54 L1440,110 L0,110 Z" fill="currentColor"/>
+  </svg>
+  <div class="sec__fx" aria-hidden="true"><span class="blob blob--15"></span><span class="blob blob--16"></span></div>
+
+  <div class="shell homebuilder__grid">
+    <div class="homebuilder__copy">
+      <p class="kicker" data-reveal="left" data-i18n="home.builder.kicker">Outil gratuit</p>
+      <h2 class="sectionTitle" data-reveal="left" data-reveal-delay="1" id="builderTitle" data-i18n="home.builder.title">Dessine ta map avant même d'ouvrir un ticket</h2>
+      <p class="sectionLead" data-reveal="left" data-reveal-delay="2" data-i18n="home.builder.lead">Un constructeur isométrique directement dans le navigateur : pose tes blocs, exporte une image et joins-la à ta commande.</p>
+      <div class="homebuilder__actions" data-reveal="up" data-reveal-delay="3">
+        <a class="btn btn--solid btn--lg" href="builder.html" data-i18n="home.builder.cta">Dessine ta map</a>
+      </div>
+    </div>
+
+    <div class="homebuilder__stage" data-reveal="right" data-reveal-delay="2">
+      <canvas id="builderPreview" aria-hidden="true"></canvas>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= PROCESS ======================= -->
 <section class="sec sec--magenta" id="process" aria-labelledby="processTitle">
   <svg class="sec__curve" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
@@ -640,6 +664,7 @@
       <a href="#process" data-i18n="nav.process">Process</a>
       <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a href="builder.html" data-i18n="nav.builder">Constructeur</a>
       <a href="#contact" data-i18n="nav.contact">Contact</a>
       <a href="https://discord.gg/PPKyGfJTQ" target="_blank" rel="noopener noreferrer">Discord</a>
     </nav>
@@ -679,5 +704,6 @@
 
 <script src="i18n.js"></script>
 <script src="main.js"></script>
+<script src="builder.js"></script>
 </body>
 </html>

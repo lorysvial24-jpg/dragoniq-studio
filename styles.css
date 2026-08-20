@@ -1649,6 +1649,60 @@ body.is-loading { overflow: hidden; }
 }
 .hero__title.is-in .word__in { transform: none; }
 
+/* ============================================================
+   15. Home page — builder teaser
+   ============================================================ */
+.sec--night {
+  --sec-bg: #130B30;
+  --sec-ink: #FFFFFF;
+  --sec-ink-soft: #C6BAF0;
+  --sec-accent: #22D3EE;
+  --sec-glow: rgba(34, 211, 238, .55);
+  --sec-btn-bg: #22D3EE;
+  --sec-btn-ink: #05161B;
+  --sec-shadow: rgba(3, 1, 20, .7);
+}
+.blob--15 { width: 44vw; height: 44vw; top: 8%; left: -12%; background: rgba(124, 58, 237, .5); }
+.blob--16 { width: 36vw; height: 36vw; bottom: 10%; right: -10%; background: rgba(34, 211, 238, .32); animation-duration: 30s; animation-delay: -8s; }
+
+.homebuilder__grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+@media (min-width: 960px) { .homebuilder__grid { grid-template-columns: .95fr 1.05fr; } }
+
+.homebuilder .sectionTitle { max-width: 19ch; }
+.homebuilder__actions { margin-top: 38px; }
+
+.homebuilder__stage {
+  position: relative;
+  border-radius: clamp(24px, 3vw, 34px);
+  background: linear-gradient(160deg, rgba(34, 211, 238, .16), rgba(124, 58, 237, .18));
+  box-shadow: 0 40px 90px -40px var(--sec-shadow);
+  padding: clamp(14px, 2vw, 22px);
+}
+.homebuilder__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, .35), transparent 60%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+#builderPreview {
+  display: block;
+  width: 100%;
+  height: clamp(280px, 38svh, 420px);
+  border-radius: clamp(16px, 2vw, 24px);
+  background: linear-gradient(180deg, #16265A, #0B1226);
+}
+
 /* --------------------------------------- 8. Motion & responsive */
 [data-reveal] {
   opacity: 0;
