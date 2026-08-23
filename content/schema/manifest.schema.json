@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lorysvial24-jpg.github.io/dragoniq-studio/content/schema/manifest.schema.json",
+  "$id": "https://dragoniqstudio.com/content/schema/manifest.schema.json",
   "title": "Fortnite Meta — manifest",
   "type": "object",
   "additionalProperties": false,

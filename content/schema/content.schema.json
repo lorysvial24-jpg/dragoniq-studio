@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lorysvial24-jpg.github.io/dragoniq-studio/content/schema/content.schema.json",
+  "$id": "https://dragoniqstudio.com/content/schema/content.schema.json",
   "title": "Fortnite Meta — content",
   "type": "object",
   "additionalProperties": false,

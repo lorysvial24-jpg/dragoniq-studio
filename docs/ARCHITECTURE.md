@@ -16,7 +16,7 @@ Saison 5 = éditer un JSON, pas recompiler.
 
 ```
 content/v1/manifest.json   (~250 o)   ──┐
-content/v1/content.json    (~15 Ko)   ──┤  GitHub Pages
+content/v1/content.json    (~15 Ko)   ──┤  Cloudflare Pages
                                         │
                           ┌─────────────┘
                           v
@@ -45,7 +45,7 @@ premier affichage.
 
 ```
 dragoniq-studio/
-├── content/                        ← LE BACKEND (servi par GitHub Pages)
+├── content/                        ← LE BACKEND (servi par Cloudflare Pages)
 │   ├── v1/manifest.json
 │   ├── v1/content.json
 │   ├── schema/manifest.schema.json

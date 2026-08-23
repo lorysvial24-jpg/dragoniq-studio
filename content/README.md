@@ -1,7 +1,7 @@
 # Contenu éditorial — Fortnite Meta
 
 Ce dossier **est** le backend de l'app mobile. Aucune base de données, aucune
-clé : l'app lit ces fichiers en HTTP via GitHub Pages.
+clé : l'app lit ces fichiers en HTTP via Cloudflare Pages.
 
 Modifier un fichier ici et pousser sur `main` = mise à jour chez tous les
 joueurs, sans republier l'app.
@@ -9,8 +9,8 @@ joueurs, sans republier l'app.
 ## URLs servies
 
 ```
-https://lorysvial24-jpg.github.io/dragoniq-studio/content/v1/manifest.json
-https://lorysvial24-jpg.github.io/dragoniq-studio/content/v1/content.json
+https://dragoniqstudio.com/content/v1/manifest.json
+https://dragoniqstudio.com/content/v1/content.json
 ```
 
 ## Mise à jour hebdomadaire
@@ -73,3 +73,22 @@ et affiche `N/A`. C'est volontaire : ça rend visible ce qui reste à traduire.
 Les `spots[].loot.en` ont été traduits littéralement depuis le français
 fourni. Ce ne sont pas forcément les termes officiels anglais du jeu
 (« bornes de mobilité » → « mobility stations » notamment). À relire.
+
+## Cache et propagation
+
+Le fichier `_headers` à la racine du dépôt fixe `max-age=300` sur `/content/*`.
+Une mise à jour est donc visible par les joueurs en **5 minutes maximum**,
+sans purge manuelle du CDN.
+
+L'app envoie en plus un `If-None-Match` : si rien n'a changé, Cloudflare
+répond `304 Not Modified` et aucune donnée n'est retéléchargée.
+
+Après le premier déploiement, vérifier une fois que l'URL répond bien :
+
+```bash
+curl -sI https://dragoniqstudio.com/content/v1/manifest.json | head -5
+```
+
+Si tu obtiens un 404, c'est que le projet Cloudflare Pages est configuré avec
+un dossier de build autre que la racine du dépôt — il faut alors y copier
+`content/` à l'étape de build.
