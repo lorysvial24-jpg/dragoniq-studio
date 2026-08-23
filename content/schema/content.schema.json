@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lorysvial24-jpg.github.io/dragoniq-studio/content/schema/content.schema.json",
+  "title": "Fortnite Meta — content",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "content_version", "season", "map", "loadout", "spots"],
+  "$defs": {
+    "localizedText": {
+      "description": "Map code langue -> texte. Une chaine vide est un PLACEHOLDER assume : l'app affiche N/A, elle n'invente rien.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z]{2}(-[A-Za-z0-9]{2,8})?$" },
+      "additionalProperties": { "type": "string" }
+    },
+    "contestLevel": {
+      "description": "null = donnee absente -> N/A. Jamais devinee.",
+      "enum": ["calm", "medium", "hot", null]
+    },
+    "percent": { "type": "number", "minimum": 0, "maximum": 100 },
+    "httpsUrl": {
+      "type": ["string", "null"],
+      "pattern": "^https://"
+    }
+  },
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "content_version": { "type": "integer", "minimum": 1 },
+    "season": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "chapter", "season", "name", "starts_at", "ends_at"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "chapter": { "type": "integer", "minimum": 1 },
+        "season": { "type": "integer", "minimum": 1 },
+        "name": { "$ref": "#/$defs/localizedText" },
+        "starts_at": { "type": "string", "format": "date" },
+        "ends_at": { "type": "string", "format": "date" }
+      }
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "image_url", "attribution"],
+      "properties": {
+        "source": { "enum": ["api", "url"] },
+        "image_url": { "$ref": "#/$defs/httpsUrl" },
+        "attribution": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "source": { "const": "url" } } },
+          "then": { "properties": { "image_url": { "type": "string", "pattern": "^https://" } } }
+        }
+      ]
+    },
+    "loadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["updated_at", "note", "slots"],
+      "properties": {
+        "updated_at": { "type": "string", "format": "date" },
+        "note": { "$ref": "#/$defs/localizedText" },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slot", "name", "display_name", "type", "why", "image_url", "api_id"],
+            "properties": {
+              "slot": { "type": "integer", "minimum": 1 },
+              "name": {
+                "description": "Nom anglais officiel : cle de resolution de l'image (niveau 3).",
+                "type": "string",
+                "minLength": 1
+              },
+              "display_name": { "$ref": "#/$defs/localizedText" },
+              "type": { "enum": ["weapon", "mobility", "consumable", "utility"] },
+              "why": { "$ref": "#/$defs/localizedText" },
+              "image_url": { "$ref": "#/$defs/httpsUrl" },
+              "api_id": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "spots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "x", "y", "contest", "loot", "why"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "name": { "$ref": "#/$defs/localizedText" },
+          "x": { "$ref": "#/$defs/percent" },
+          "y": { "$ref": "#/$defs/percent" },
+          "contest": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["public", "tournament"],
+            "properties": {
+              "public": { "$ref": "#/$defs/contestLevel" },
+              "tournament": { "$ref": "#/$defs/contestLevel" }
+            }
+          },
+          "loot": { "$ref": "#/$defs/localizedText" },
+          "why": { "$ref": "#/$defs/localizedText" }
+        }
+      }
+    }
+  }
+}
