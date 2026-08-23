@@ -4,8 +4,12 @@ name: Validate content
 # par l'app mobile. Un fichier casse ici casse l'app chez les joueurs :
 # ce job est le garde-fou avant publication.
 
+# Le push est limité à main : sur une branche de PR, le déclencheur
+# pull_request suffit. Sans ça les deux déclencheurs matchent et le job
+# tourne deux fois sur le même commit.
 on:
   push:
+    branches: [main]
     paths:
       - 'content/**'
       - 'tool/validate_content.py'

@@ -1,7 +1,11 @@
 name: Flutter app
 
+# Le push est limité à main : sur une branche de PR, le déclencheur
+# pull_request suffit. Sans ça les deux déclencheurs matchent et le job
+# tourne deux fois sur le même commit.
 on:
   push:
+    branches: [main]
     paths:
       - 'fortnite_meta/**'
       - '.github/workflows/flutter.yml'
