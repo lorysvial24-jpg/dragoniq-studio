@@ -1,0 +1,41 @@
+name: fortnite_meta
+description: Meta compétitif Fortnite — loadout et spots de spawn, mis à jour chaque semaine.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # État. AsyncValue modélise loading / data / erreur-avec-cache-périmé,
+  # qui est exactement le cycle de vie du contenu de cette app.
+  flutter_riverpod: ^3.0.3
+
+  # Réseau : deux endpoints, pas besoin de plus lourd.
+  http: ^1.6.0
+
+  # Cache disque des PNG d'items et de la map.
+  cached_network_image: ^3.4.1
+
+  # Emplacement du cache de contenu + préférence de langue.
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.5
+
+  intl: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/bootstrap/
+

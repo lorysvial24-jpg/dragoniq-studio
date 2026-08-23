@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "content_version": 1,
+  "season": {
+    "code": "c7s4",
+    "chapter": 7,
+    "season": 4,
+    "name": { "en": "Override", "fr": "Système Hacké" },
+    "starts_at": "2026-08-20",
+    "ends_at": "2026-11-01"
+  },
+  "map": {
+    "source": "api",
+    "image_url": null,
+    "attribution": "fortnite-api.com"
+  },
+  "loadout": {
+    "updated_at": "2026-08-23",
+    "note": { "en": "", "fr": "" },
+    "slots": [
+      {
+        "slot": 1,
+        "name": "Tactical Pistol",
+        "display_name": { "en": "", "fr": "" },
+        "type": "weapon",
+        "why": { "en": "", "fr": "" },
+        "image_url": null,
+        "api_id": null
+      },
+      {
+        "slot": 2,
+        "name": "Enhanced 8-Bit Shotgun",
+        "display_name": { "en": "", "fr": "" },
+        "type": "weapon",
+        "why": { "en": "", "fr": "" },
+        "image_url": null,
+        "api_id": null
+      },
+      {
+        "slot": 3,
+        "name": "Overdrive Grenade",
+        "display_name": { "en": "", "fr": "" },
+        "type": "mobility",
+        "why": { "en": "", "fr": "" },
+        "image_url": null,
+        "api_id": null
+      },
+      {
+        "slot": 4,
+        "name": "Small Shield Potion",
+        "display_name": { "en": "", "fr": "" },
+        "type": "consumable",
+        "why": { "en": "", "fr": "" },
+        "image_url": null,
+        "api_id": null
+      },
+      {
+        "slot": 5,
+        "name": "Medkit",
+        "display_name": { "en": "", "fr": "" },
+        "type": "consumable",
+        "why": { "en": "", "fr": "" },
+        "image_url": null,
+        "api_id": null
+      }
+    ]
+  },
+  "spots": [
+    {
+      "id": 1,
+      "name": { "en": "", "fr": "" },
+      "x": 42.0,
+      "y": 44.0,
+      "contest": { "public": null, "tournament": null },
+      "loot": {
+        "en": "~12 chests, shield truck, lots of materials, fishing spots",
+        "fr": "~12 coffres, camion de shield, beaucoup de matériaux, zones de pêche"
+      },
+      "why": { "en": "", "fr": "" }
+    },
+    {
+      "id": 2,
+      "name": { "en": "", "fr": "" },
+      "x": 47.0,
+      "y": 50.0,
+      "contest": { "public": null, "tournament": null },
+      "loot": {
+        "en": "~10 chests, mobility stations",
+        "fr": "~10 coffres, bornes de mobilité"
+      },
+      "why": { "en": "", "fr": "" }
+    },
+    {
+      "id": 3,
+      "name": { "en": "", "fr": "" },
+      "x": 81.0,
+      "y": 41.0,
+      "contest": { "public": null, "tournament": null },
+      "loot": {
+        "en": "~15 chests across two islands, fishing spots",
+        "fr": "~15 coffres sur deux îles, zones de pêche"
+      },
+      "why": { "en": "", "fr": "" }
+    },
+    {
+      "id": 4,
+      "name": { "en": "", "fr": "" },
+      "x": 77.0,
+      "y": 69.0,
+      "contest": { "public": null, "tournament": null },
+      "loot": {
+        "en": "~12 chests, fishing spots",
+        "fr": "~12 coffres, zones de pêche"
+      },
+      "why": { "en": "", "fr": "" }
+    },
+    {
+      "id": 5,
+      "name": { "en": "", "fr": "" },
+      "x": 43.0,
+      "y": 75.0,
+      "contest": { "public": null, "tournament": null },
+      "loot": {
+        "en": "~10 tightly clustered chests",
+        "fr": "~10 coffres très concentrés"
+      },
+      "why": { "en": "", "fr": "" }
+    }
+  ]
+}

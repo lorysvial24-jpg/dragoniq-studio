@@ -1,0 +1,11 @@
+# Cloudflare Pages — en-têtes de réponse
+#
+# Le dossier /content est consommé par l'app mobile Fortnite Meta, pas par
+# le site. Il lui faut ses propres règles de cache : assez court pour qu'une
+# mise à jour hebdomadaire arrive vite, assez long pour ne pas taper le CDN
+# à chaque lancement d'app.
+
+/content/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff

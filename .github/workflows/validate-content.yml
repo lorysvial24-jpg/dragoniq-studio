@@ -1,0 +1,37 @@
+name: Validate content
+
+# Le contenu editorial est publie par GitHub Pages et consomme directement
+# par l'app mobile. Un fichier casse ici casse l'app chez les joueurs :
+# ce job est le garde-fou avant publication.
+
+# Le push est limité à main : sur une branche de PR, le déclencheur
+# pull_request suffit. Sans ça les deux déclencheurs matchent et le job
+# tourne deux fois sur le même commit.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'tool/validate_content.py'
+      - '.github/workflows/validate-content.yml'
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'tool/validate_content.py'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install 'jsonschema[format]'
+
+      - name: Validate content
+        run: python tool/validate_content.py
