@@ -1,0 +1,39 @@
+name: Flutter app
+
+on:
+  push:
+    paths:
+      - 'fortnite_meta/**'
+      - '.github/workflows/flutter.yml'
+  pull_request:
+    paths:
+      - 'fortnite_meta/**'
+  workflow_dispatch:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fortnite_meta
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.1'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test

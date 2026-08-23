@@ -1,0 +1,46 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Fortnite Meta",
+
+  "tabLoadout": "Loadout",
+  "tabSpawns": "Spawns",
+  "tabSettings": "Settings",
+
+  "notAvailable": "N/A",
+  "@notAvailable": { "description": "Shown wherever the backend has no value. Never a guess." },
+
+  "seasonChip": "C{chapter} S{season}",
+  "@seasonChip": {
+    "placeholders": { "chapter": { "type": "int" }, "season": { "type": "int" } }
+  },
+
+  "loadoutWhyMeta": "Why it's meta",
+  "loadoutSlotBadge": "{number}",
+  "@loadoutSlotBadge": { "placeholders": { "number": { "type": "int" } } },
+  "loadoutUpdatedOn": "Updated {date}",
+  "@loadoutUpdatedOn": { "placeholders": { "date": { "type": "String" } } },
+  "loadoutEmpty": "No loadout published yet.",
+
+  "itemTypeWeapon": "Weapon",
+  "itemTypeMobility": "Mobility",
+  "itemTypeConsumable": "Consumable",
+  "itemTypeUtility": "Utility",
+  "itemTypeUnknown": "Item",
+
+  "bannerOfflineCache": "Offline — showing last saved content",
+  "bannerStaleCache": "Couldn't refresh — showing content from {date}",
+  "@bannerStaleCache": { "placeholders": { "date": { "type": "String" } } },
+  "bannerBundled": "Showing content bundled with the app",
+  "bannerRetry": "Retry",
+
+  "errorTitle": "Nothing to show yet",
+  "errorBody": "The content couldn't be loaded and no copy is saved on this device.",
+
+  "settingsLanguage": "Language",
+  "settingsAbout": "About",
+  "settingsContentVersion": "Content version {version}",
+  "@settingsContentVersion": { "placeholders": { "version": { "type": "int" } } },
+
+  "aboutDisclaimer": "This app is not affiliated with, endorsed by, or sponsored by Epic Games, Inc. Fortnite is a trademark of Epic Games, Inc."
+}
