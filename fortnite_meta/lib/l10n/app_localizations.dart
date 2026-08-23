@@ -246,6 +246,120 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'This app is not affiliated with, endorsed by, or sponsored by Epic Games, Inc. Fortnite is a trademark of Epic Games, Inc.'**
   String get aboutDisclaimer;
+
+  /// No description provided for @spawnsMapTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get spawnsMapTab;
+
+  /// No description provided for @spawnsListTab.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get spawnsListTab;
+
+  /// No description provided for @spawnsContestPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get spawnsContestPublic;
+
+  /// No description provided for @spawnsContestTournament.
+  ///
+  /// In en, this message translates to:
+  /// **'Tournament'**
+  String get spawnsContestTournament;
+
+  /// No description provided for @contestCalm.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get contestCalm;
+
+  /// No description provided for @contestMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get contestMedium;
+
+  /// No description provided for @contestHot.
+  ///
+  /// In en, this message translates to:
+  /// **'Hot'**
+  String get contestHot;
+
+  /// No description provided for @spawnsLoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Loot'**
+  String get spawnsLoot;
+
+  /// No description provided for @spawnsWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why this spot'**
+  String get spawnsWhy;
+
+  /// No description provided for @spawnsFilterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get spawnsFilterTitle;
+
+  /// No description provided for @spawnsFilterAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get spawnsFilterAny;
+
+  /// No description provided for @spawnsFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get spawnsFilterClear;
+
+  /// No description provided for @spawnsNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No spot matches these filters.'**
+  String get spawnsNoMatch;
+
+  /// No description provided for @spawnsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No spots published yet.'**
+  String get spawnsEmpty;
+
+  /// No description provided for @spawnsMapUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Map image unavailable'**
+  String get spawnsMapUnavailable;
+
+  /// No description provided for @spawnsMapAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Map via {source}'**
+  String spawnsMapAttribution(String source);
+
+  /// No description provided for @spawnsSpotCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No spots} =1{1 spot} other{{count} spots}}'**
+  String spawnsSpotCount(int count);
+
+  /// No description provided for @spawnsResetZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset zoom'**
+  String get spawnsResetZoom;
+
+  /// No description provided for @spawnsLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Ring colour = tournament contest'**
+  String get spawnsLegend;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

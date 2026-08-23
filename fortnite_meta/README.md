@@ -33,7 +33,7 @@ flutter run --dart-define=CONTENT_BASE_URL=http://10.0.2.2:8000/content/v1
 
 ```bash
 flutter analyze   # doit finir sur "No issues found!"
-flutter test      # 33 tests
+flutter test      # 41 tests
 ```
 
 ## Le contenu embarqué
@@ -54,7 +54,7 @@ cp ../content/v1/content.json assets/bootstrap/content.json
 | Onglet | État |
 |---|---|
 | Loadout | fait |
-| Spawns | à venir — modèles et données déjà en place |
+| Spawns | fait — map, marqueurs, fiche, vue liste filtrable |
 | Réglages | sélecteur de langue fait, écran « À propos » complet à venir |
 
 ## Limite connue

@@ -87,8 +87,9 @@ dragoniq-studio/
     │   │
     │   ├── features/
     │   │   ├── loadout/   loadout_page, loadout_slot_card, loadout_controller
-    │   │   ├── spawns/    spawns_page, map_view, spot_marker, spot_sheet,
-    │   │   │              spots_list_view, spot_filters, spawns_controller
+    │   │   ├── spawns/    spawns_page, map_view, map_legend, spot_marker,
+    │   │   │              spot_sheet, spots_list_view, spot_filters,
+    │   │   │              spawns_controller
     │   │   └── settings/  settings_page, language_page, about_page
     │   │
     │   └── shared/widgets/
@@ -156,6 +157,11 @@ top:  constraints.maxHeight * spot.y / 100
 
 Les marqueurs contre-scalent au zoom : ils gardent leur taille de touche
 au doigt quel que soit le niveau de zoom.
+
+La map entière est visible à l'ouverture, sans recadrage : choisir un point de
+chute, c'est comparer les spots entre eux, et en cacher un derrière un bord
+coûterait plus que les bandes gagnées à remplir l'écran. Une légende sous la
+map explique la couleur des anneaux.
 
 Tap sur un marqueur → fiche en bottom sheet : nom, les deux niveaux de
 contestation côte à côte, loot, phrase « pourquoi ». Chaque champ vide

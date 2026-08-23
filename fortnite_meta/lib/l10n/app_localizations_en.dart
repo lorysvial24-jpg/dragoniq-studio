@@ -95,4 +95,72 @@ class AppL10nEn extends AppL10n {
   @override
   String get aboutDisclaimer =>
       'This app is not affiliated with, endorsed by, or sponsored by Epic Games, Inc. Fortnite is a trademark of Epic Games, Inc.';
+
+  @override
+  String get spawnsMapTab => 'Map';
+
+  @override
+  String get spawnsListTab => 'List';
+
+  @override
+  String get spawnsContestPublic => 'Public';
+
+  @override
+  String get spawnsContestTournament => 'Tournament';
+
+  @override
+  String get contestCalm => 'Calm';
+
+  @override
+  String get contestMedium => 'Medium';
+
+  @override
+  String get contestHot => 'Hot';
+
+  @override
+  String get spawnsLoot => 'Loot';
+
+  @override
+  String get spawnsWhy => 'Why this spot';
+
+  @override
+  String get spawnsFilterTitle => 'Filters';
+
+  @override
+  String get spawnsFilterAny => 'Any';
+
+  @override
+  String get spawnsFilterClear => 'Clear filters';
+
+  @override
+  String get spawnsNoMatch => 'No spot matches these filters.';
+
+  @override
+  String get spawnsEmpty => 'No spots published yet.';
+
+  @override
+  String get spawnsMapUnavailable => 'Map image unavailable';
+
+  @override
+  String spawnsMapAttribution(String source) {
+    return 'Map via $source';
+  }
+
+  @override
+  String spawnsSpotCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count spots',
+      one: '1 spot',
+      zero: 'No spots',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get spawnsResetZoom => 'Reset zoom';
+
+  @override
+  String get spawnsLegend => 'Ring colour = tournament contest';
 }
